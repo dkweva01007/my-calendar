@@ -20,7 +20,9 @@ export class HomePage {
   constructor(public navCtrl: NavController, private googlePlus: GooglePlus) {}
 
   login() {
-    this.googlePlus.login({})
+    this.googlePlus.login({
+		'scopes': 'https://www.googleapis.com/auth/calendar'
+		})
       .then(res => {
         console.log(res);
         this.displayName = res.displayName;
