@@ -1,24 +1,26 @@
 <ion-header>
-  <ion-navbar color="primary">
+  <ion-navbar>
     <ion-title>
-      {{ viewTitle }}
+      Ionic Blank
     </ion-title>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="addEvent()">
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
- 
-<ion-content>
-<calendar [eventSource]="eventSource"
-        [calendarMode]="calendar.mode"
-        [currentDate]="calendar.currentDate"
-        (onEventSelected)="onEventSelected($event)"
-        (onTitleChanged)="onViewTitleChanged($event)"
-        (onTimeSelected)="onTimeSelected($event)"
-        step="30"
-        class="calendar">
-      </calendar>
+
+<ion-content padding>
+  <div *ngIf="isLoggedIn">
+    <h1>Welcome, {{displayName}}!</h1>
+    <p>Email: {{email}}<br>
+      Family Name: {{familyName}}<br>
+      Given Name: {{givenName}}<br>
+      User ID: {{userId}}</p>
+    <p><ion-avatar item-left>
+        <img src="{{imageUrl}}">
+       </ion-avatar></p>
+    <p><button ion-button (click)="logout()">Logout From Google</button></p>
+  </div>
+
+  <div *ngIf="!isLoggedIn">
+    <h1>Please Login to see your Google Account Information</h1>
+    <p><button ion-button (click)="login()">Login With Google</button></p>
+  </div>
 </ion-content>

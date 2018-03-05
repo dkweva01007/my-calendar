@@ -1,61 +1,54 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController, AlertController } from 'ionic-angular';
-import * as moment from 'moment';
+import { NavController } from 'ionic-angular';
+import { GooglePlus } from '@ionic-native/google-plus';
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers: [GooglePlus]
 })
 export class HomePage {
-  eventSource = [];
-  viewTitle: string;
-  selectedDay = new Date();
+  displayName: any;
+  email: any;
+  familyName: any;
+  givenName: any;
+  userId: any;
+  imageUrl: any;
+
+  isLoggedIn:boolean = false;
   
-  calendar = {
-    mode: 'month',
-    currentDate: new Date()
-  };
+  constructor(public navCtrl: NavController, private googlePlus: GooglePlus) {}
 
-  constructor(public navCtrl: NavController, private modalCtrl: ModalController, private alertCtrl: AlertController) { }
+  login() {
+    this.googlePlus.login({})
+      .then(res => {
+        console.log(res);
+        this.displayName = res.displayName;
+        this.email = res.email;
+        this.familyName = res.familyName;
+        this.givenName = res.givenName;
+        this.userId = res.userId;
+        this.imageUrl = res.imageUrl;
 
-  addEvent() {
-    let modal = this.modalCtrl.create('EventModalPage', {selectedDay: this.selectedDay});
-    modal.present();
-    modal.onDidDismiss(data => {
-      if (data) {
-        let eventData = data;
- 
-        eventData.startTime = new Date(data.startTime);
-        eventData.endTime = new Date(data.endTime);
- 
-        let events = this.eventSource;
-        events.push(eventData);
-        this.eventSource = [];
-        setTimeout(() => {
-          this.eventSource = events;
-        });
-      }
-    });
+        this.isLoggedIn = true;
+      })
+      .catch(err => console.error(err));
+  }
+
+  logout() {
+    this.googlePlus.logout()
+      .then(res => {
+        console.log(res);
+        this.displayName = "";
+        this.email = "";
+        this.familyName = "";
+        this.givenName = "";
+        this.userId = "";
+        this.imageUrl = "";
+
+        this.isLoggedIn = false;
+      })
+      .catch(err => console.error(err));
   }
   
-  onViewTitleChanged(title) {
-    this.viewTitle = title;
-  }
- 
-  onEventSelected(event) {
-    let start = moment(event.startTime).format('LLLL');
-    let end = moment(event.endTime).format('LLLL');
-    
-    let alert = this.alertCtrl.create({
-      title: '' + event.title,
-      subTitle: 'From: ' + start + '<br>To: ' + end,
-      buttons: ['OK']
-    })
-    alert.present();
-  }
- 
-  onTimeSelected(ev) {
-    this.selectedDay = ev.selectedTime;
-  }
-
 }
