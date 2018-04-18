@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { GooglePlus } from '@ionic-native/google-plus';
+import { GHttpProvider } from '../../providers/g-http/g-http';
 
 @Component({
   selector: 'page-home',
@@ -14,17 +15,33 @@ export class HomePage {
   givenName: any;
   userId: any;
   imageUrl: any;
+  calendarList: any;
+  
 
   isLoggedIn:boolean = false;
   
-  constructor(public navCtrl: NavController, private googlePlus: GooglePlus) {}
+  constructor(public navCtrl: NavController, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
+    if(localStorage.getItem("gToken") === null)
+      localStorage.setItem("gToken", '[]');
+  }
 
   login() {
-    this.googlePlus.login({
-		'scopes': 'https://www.googleapis.com/auth/calendar'
-		})
+    /*if (localStorage.getItem("gToken") !== null) {
+      this.calendarList = this.gHttpProvider.get('https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=owner', localStorage.getItem("gToken"));
+	  console.log(this.calendarList);
+    }else{
+      this.googlePlus.login({
+        'scopes': 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
+        'webClientId': '235375545183-c9r6vgbgl2k3sh8rf3vd62s9vpbhlvb4.apps.googleusercontent.com',
+        'offline':true,
+      })
       .then(res => {
-        console.log(res);
+	  	this.calendarList = this.gHttpProvider.get('https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=owner', res.serverAuthCode );
+		localStorage.setItem("gToken", res.accessToken);
+	  	console.log(res.accessToken);
+		console.log(res.serverAuthCode);
+	  	console.log(res);
+	  	console.log(this.calendarList);
         this.displayName = res.displayName;
         this.email = res.email;
         this.familyName = res.familyName;
@@ -35,6 +52,21 @@ export class HomePage {
         this.isLoggedIn = true;
       })
       .catch(err => console.error(err));
+    }*/
+	
+    this.gHttpProvider.login()
+    .then(res => {
+      console.log(res);
+      this.displayName = res.displayName;
+      this.email = res.email;
+      this.familyName = res.familyName;
+      this.givenName = res.givenName;
+      this.userId = res.userId;
+      this.imageUrl = res.imageUrl;
+
+      this.isLoggedIn = true;
+    })
+    .catch(err => console.error(err));
   }
 
   logout() {
