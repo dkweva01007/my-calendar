@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 import { GHttpProvider } from '../../providers/g-http/g-http';
+
 import * as moment from 'moment';
 
 @Component({
@@ -9,6 +10,7 @@ import * as moment from 'moment';
 })
 export class CalendarPage {
   eventSource = [];
+  myIndex: number;
   viewTitle: string;
   selectedDay = new Date();
 
@@ -18,12 +20,12 @@ export class CalendarPage {
   };
 
   constructor(public navCtrl: NavController, private modalCtrl: ModalController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
-       console.log('inside calendar page');
-       this.gHttpProvider.getMyCalendarEvents()
-         .then(res => {
-           console.log(res);
-         })
-         .catch(err => console.error(err));
+    this.myIndex = navParams.data.tabIndex || 0;
+    this.gHttpProvider.getMyCalendarEvents()
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.error(err));
   }
 
   addEvent() {

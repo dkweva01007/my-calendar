@@ -8,6 +8,7 @@ import { HttpModule} from '@angular/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { MenuPage } from '../pages/menu/menu';
 import { CalendarPage } from '../pages/calendar/calendar';
 
 import { NgCalendarModule  } from 'ionic2-calendar';
@@ -18,10 +19,11 @@ import { IonicStorageModule } from '@ionic/storage';
   declarations: [
     MyApp,
     HomePage,
-    CalendarPage
+	  MenuPage,
+	  CalendarPage
   ],
   imports: [
-	NgCalendarModule,
+	  NgCalendarModule,
     BrowserModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
@@ -31,7 +33,8 @@ import { IonicStorageModule } from '@ionic/storage';
   entryComponents: [
     MyApp,
     HomePage,
-    CalendarPage
+	  MenuPage,
+	  CalendarPage
   ],
   providers: [
     GooglePlus,
