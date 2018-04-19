@@ -3,6 +3,8 @@ import { NavController } from 'ionic-angular';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GHttpProvider } from '../../providers/g-http/g-http';
 
+import { CalendarPage } from '../calendar/calendar';
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
@@ -16,10 +18,10 @@ export class HomePage {
   userId: any;
   imageUrl: any;
   calendarList: any;
-  
+
 
   isLoggedIn:boolean = false;
-  
+
   constructor(public navCtrl: NavController, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
     if(localStorage.getItem("gToken") === null)
       localStorage.setItem("gToken", '[]');
@@ -53,7 +55,7 @@ export class HomePage {
       })
       .catch(err => console.error(err));
     }*/
-	
+
     this.gHttpProvider.login()
     .then(res => {
       console.log(res);
@@ -84,5 +86,9 @@ export class HomePage {
       })
       .catch(err => console.error(err));
   }
-  
+
+  showCalendarPage() {
+    this.navCtrl.push(CalendarPage);
+  }
+
 }
