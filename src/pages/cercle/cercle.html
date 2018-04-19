@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons>
+      <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+      <ion-title>Cercle d'amis</ion-title>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list no-lines inset>
+    <ion-item small color="balanced" *ngFor="let cercle_friend of cercle_friends">
+        <ion-label item-content>{{ cercle_friend.name }}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<button ion-button id="Run" (click)="addCercleFriend()">Ajouter un nouveau cercle</button>
