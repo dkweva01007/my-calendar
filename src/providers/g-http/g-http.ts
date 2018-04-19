@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { GooglePlus } from '@ionic-native/google-plus';
 
-
+declare var gapi: any;
 
 /*
   Generated class for the GHttpProvider provider.
@@ -66,9 +66,27 @@ export class GHttpProvider {
         return null;
     });
   }
+  
+  startGAPI(token) {
+
+    gapi.client.request({
+      'path': 'https://www.googleapis.com/calendar/v3/users/me/calendarList',
+      'method': 'GET',
+      'params': {
+        'key': 'AIzaSyCG5CWzIexkOJpEfhjEfkp7VqKjD6mDi4A'
+      },
+      'headers': {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .execute(function(resp) {
+      console.log('GAPI REs : ', resp);
+    });
+
+  }
 
   login(): Promise<any> {
-	  let tmp = this;
+	let tmp = this;
     return new Promise(function (resolve, reject) {
       tmp.googlePlus.login({
         'scopes': 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
@@ -76,9 +94,12 @@ export class GHttpProvider {
         'offline':true,
       })
       .then(res => {
-	    let users = JSON.parse(localStorage.getItem("gToken"));
-	    users.push(res);
+        let users = JSON.parse(localStorage.getItem("gToken"));
+        users.push(res);
         localStorage.setItem("gToken", JSON.stringify(users));
+        gapi.load('client', tmp.startGAPI(res.accessToken));
+       
+		
         resolve(res);
       })
       .catch(err => {reject(err);});
