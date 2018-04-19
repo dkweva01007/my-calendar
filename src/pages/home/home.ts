@@ -21,7 +21,7 @@ export class HomePage {
   myIndex: number;
   isLoggedIn:boolean = false;
 
-  constructor(public navCtrl: NavController, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
     if(localStorage.getItem("gToken") === null) {
       localStorage.setItem("gToken", '[]');
     }

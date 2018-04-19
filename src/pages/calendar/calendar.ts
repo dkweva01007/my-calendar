@@ -19,7 +19,7 @@ export class CalendarPage {
     currentDate: new Date()
   };
 
-  constructor(public navCtrl: NavController, private modalCtrl: ModalController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
     this.myIndex = navParams.data.tabIndex || 0;
     this.gHttpProvider.getMyCalendarEvents()
       .then(res => {
