@@ -12,31 +12,32 @@ import { MenuPage } from '../pages/menu/menu';
 import { CalendarPage } from '../pages/calendar/calendar';
 import { CerclePage } from '../pages/cercle/cercle';
 
-
 import { NgCalendarModule  } from 'ionic2-calendar';
 import { GHttpProvider } from '../providers/g-http/g-http';
+import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-	MenuPage,
-	CalendarPage,
-	CerclePage
+    MenuPage,
+    CalendarPage,
+    CerclePage
   ],
   imports: [
-	NgCalendarModule,
+	  NgCalendarModule,
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
-	MenuPage,
-	CalendarPage,
-	CerclePage
+    MenuPage,
+    CalendarPage,
+    CerclePage
   ],
   providers: [
     GooglePlus,

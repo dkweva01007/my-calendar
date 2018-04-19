@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
+import { GHttpProvider } from '../../providers/g-http/g-http';
+
 import * as moment from 'moment';
 
 @Component({
@@ -11,14 +13,19 @@ export class CalendarPage {
   myIndex: number;
   viewTitle: string;
   selectedDay = new Date();
-  
+
   calendar = {
     mode: 'month',
     currentDate: new Date()
   };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController, private alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, private modalCtrl: ModalController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
     this.myIndex = navParams.data.tabIndex || 0;
+    this.gHttpProvider.getMyCalendarEvents()
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.error(err));
   }
 
   addEvent() {
@@ -27,10 +34,10 @@ export class CalendarPage {
     modal.onDidDismiss(data => {
       if (data) {
         let eventData = data;
- 
+
         eventData.startTime = new Date(data.startTime);
         eventData.endTime = new Date(data.endTime);
- 
+
         let events = this.eventSource;
         events.push(eventData);
         this.eventSource = [];
@@ -40,15 +47,15 @@ export class CalendarPage {
       }
     });
   }
-  
+
   onViewTitleChanged(title) {
     this.viewTitle = title;
   }
- 
+
   onEventSelected(event) {
     let start = moment(event.startTime).format('LLLL');
     let end = moment(event.endTime).format('LLLL');
-    
+
     let alert = this.alertCtrl.create({
       title: '' + event.title,
       subTitle: 'From: ' + start + '<br>To: ' + end,
@@ -56,7 +63,7 @@ export class CalendarPage {
     })
     alert.present();
   }
- 
+
   onTimeSelected(ev) {
     this.selectedDay = ev.selectedTime;
   }
