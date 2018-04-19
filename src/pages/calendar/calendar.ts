@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 import * as moment from 'moment';
 
 @Component({
   selector: 'page-calendar',
   templateUrl: 'calendar.html'
 })
-export class HomePage {
+export class CalendarPage {
   eventSource = [];
+  myIndex: number;
   viewTitle: string;
   selectedDay = new Date();
   
@@ -16,7 +17,9 @@ export class HomePage {
     currentDate: new Date()
   };
 
-  constructor(public navCtrl: NavController, private modalCtrl: ModalController, private alertCtrl: AlertController) { }
+  constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController, private alertCtrl: AlertController) {
+    this.myIndex = navParams.data.tabIndex || 0;
+  }
 
   addEvent() {
     let modal = this.modalCtrl.create('EventModalPage', {selectedDay: this.selectedDay});

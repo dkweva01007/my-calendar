@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GHttpProvider } from '../../providers/g-http/g-http';
 
@@ -16,13 +16,15 @@ export class HomePage {
   userId: any;
   imageUrl: any;
   calendarList: any;
+  myIndex: number;
   
 
   isLoggedIn:boolean = false;
   
-  constructor(public navCtrl: NavController, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
     if(localStorage.getItem("gToken") === null)
       localStorage.setItem("gToken", '[]');
+    this.myIndex = navParams.data.tabIndex || 0;
   }
 
   login() {

@@ -1,10 +1,14 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
+    <ion-buttons>
+      <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+      <ion-title>Profile</ion-title>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
+
 
 <ion-content padding>
   <div *ngIf="isLoggedIn">
