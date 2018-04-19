@@ -18,14 +18,12 @@ export class CalendarPage {
   };
 
   constructor(public navCtrl: NavController, private modalCtrl: ModalController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
-    console.log('inside calendar page');
-
-    this.gHttpProvider.getMyCalendarEvents()
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => console.error(err));
-
+       console.log('inside calendar page');
+       this.gHttpProvider.getMyCalendarEvents()
+         .then(res => {
+           console.log(res);
+         })
+         .catch(err => console.error(err));
   }
 
   addEvent() {
