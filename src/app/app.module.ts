@@ -10,6 +10,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { MenuPage } from '../pages/menu/menu';
 import { CalendarPage } from '../pages/calendar/calendar';
+import { CerclePage } from '../pages/cercle/cercle';
 
 
 import { NgCalendarModule  } from 'ionic2-calendar';
@@ -20,7 +21,8 @@ import { GHttpProvider } from '../providers/g-http/g-http';
     MyApp,
     HomePage,
 	MenuPage,
-	CalendarPage
+	CalendarPage,
+	CerclePage
   ],
   imports: [
 	NgCalendarModule,
@@ -33,7 +35,8 @@ import { GHttpProvider } from '../providers/g-http/g-http';
     MyApp,
     HomePage,
 	MenuPage,
-	CalendarPage
+	CalendarPage,
+	CerclePage
   ],
   providers: [
     GooglePlus,

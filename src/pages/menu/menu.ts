@@ -1,5 +1,6 @@
 import { HomePage } from './../home/home';
 import { CalendarPage } from './../calendar/calendar';
+import { CerclePage } from './../cercle/cercle';
 import { Component, ViewChild, } from '@angular/core';
 import { IonicPage, NavController, Nav } from 'ionic-angular';
 
@@ -17,6 +18,7 @@ export class MenuPage {
   pages = [
     { title: 'Profile', component: HomePage, index: 0, icon: 'home' },
     { title: 'Calendrier', component: CalendarPage, index: 1, icon: 'contacts' },
+    { title: 'Cercle d\'ami', component: CerclePage, index: 2, icon: 'contacts' },
   ];
 
   constructor(public navCtrl: NavController) { }

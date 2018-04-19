@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
-import * as moment from 'moment';
 
 /**
  * Generated class for the EventModalPage page.
@@ -16,13 +15,12 @@ import * as moment from 'moment';
 })
 export class EventModalAddCerclePage {
 
-  title: any;
-  friends: any;
-  cercle_friend= {}
+  cercle_friend= {name: "", friends: []}
+  contact= {name: null, email: null}
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {
-    this.cercle_friend.title = this.navParams.get('titles');
-    this.cercle_friend.friends = this.navParams.get('friends');
+    this.cercle_friend.name = this.navParams.get('name') != null ? this.navParams.get('name') : "Nouveau Cercle";
+    this.cercle_friend.friends = this.navParams.get('friends') != null ? this.navParams.get('friends') : [] ;
   }
 
   cancel() {

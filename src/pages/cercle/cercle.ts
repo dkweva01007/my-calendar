@@ -25,20 +25,17 @@ export class CerclePage {
   }
   
   addCercleFriend() {
-    let modal = this.modalCtrl.create('EventModalAddCerclePage', {selectedDay: this.selectedDay});
+    let modal = this.modalCtrl.create('EventModalAddCerclePage',{name: null, friends: null});
     modal.present();
     modal.onDidDismiss(data => {
       if (data) {
         let eventData = data;
  
-        eventData.startTime = new Date(data.startTime);
-        eventData.endTime = new Date(data.endTime);
- 
-        let events = this.eventSource;
+        let events = this.cercle_friends;
         events.push(eventData);
-        this.eventSource = [];
+        this.cercle_friends = [];
         setTimeout(() => {
-          this.eventSource = events;
+          this.cercle_friends = events;
         });
       }
     });
