@@ -10,7 +10,7 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
- 
+
 <ion-content>
 <calendar [eventSource]="eventSource"
         [calendarMode]="calendar.mode"
@@ -18,7 +18,6 @@
         (onEventSelected)="onEventSelected($event)"
         (onTitleChanged)="onViewTitleChanged($event)"
         (onTimeSelected)="onTimeSelected($event)"
-		[locale]="calendar.locale"
         step="30"
         class="calendar">
       </calendar>
