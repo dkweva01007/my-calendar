@@ -49,39 +49,50 @@ export class CalendarPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
     this.myIndex = navParams.data.tabIndex || 0;
+    this.showAllGoogleEventsOnCalendar();
+  }
+
+  showAllGoogleEventsOnCalendar() {
     this.gHttpProvider.getMyCalendarEvents()
       .then(events => {
         this.eventSource = [];
         let tmp = this;
-        events.forEach(function (event, index) {
-          tmp.eventSource.push({
-            title: event.summary,
-            startTime: event.start.hasOwnProperty('dateTime') ? new Date(event.start.dateTime) : new Date(event.start.date),
-            endTime: event.end.hasOwnProperty('dateTime') ? new Date(event.end.dateTime) : new Date(event.end.date),
-            allDay: event.start.hasOwnProperty('date')
-          });
+        console.log('showAllGoogleEventsOnCalendar| all events : ', events);
+        events.forEach(function (event) {
+          tmp.addGoogleEvent(event);
         });
       })
       .catch(err => console.error(err));
   }
 
+  addGoogleEvent(googleEvent) {
+    if(googleEvent.summary === "Tryyyyyyy" || googleEvent.summary === "Vacation") {
+      console.log('this is Tryyyyyyy: ', googleEvent);
+    }
+    if(googleEvent && googleEvent.hasOwnProperty('start') && googleEvent.hasOwnProperty('end')) {
+
+      if(googleEvent.summary === "Tryyyyyyy") {
+        console.log('this is pushing now: ');
+      }
+      this.eventSource.push({
+        title: googleEvent.summary,
+        startTime: googleEvent.start.hasOwnProperty('dateTime') ? new Date(googleEvent.start.dateTime) : new Date(googleEvent.start.date),
+        endTime: googleEvent.end.hasOwnProperty('dateTime') ? new Date(googleEvent.end.dateTime) : new Date(googleEvent.end.date),
+        allDay: googleEvent.start.hasOwnProperty('date')
+      });
+      if(googleEvent.summary === "Tryyyyyyy" || googleEvent.summary === "Vacation") {
+        console.log('last ? ', this.eventSource[this.eventSource.length - 1])
+      }
+    } else {
+      console.log('incorrect googleEvent format: ', googleEvent);
+    }
+  }
+
   addEvent() {
     let modal = this.modalCtrl.create('EventModalPage', {selectedDay: this.selectedDay});
     modal.present();
-    modal.onDidDismiss(data => {
-      if (data) {
-        let eventData = data;
-
-        eventData.startTime = new Date(data.startTime);
-        eventData.endTime = new Date(data.endTime);
-
-        let events = this.eventSource;
-        events.push(eventData);
-        this.eventSource = [];
-        setTimeout(() => {
-          this.eventSource = events;
-        });
-      }
+    modal.onDidDismiss(savedEvent => {
+      this.showAllGoogleEventsOnCalendar();
     });
   }
 

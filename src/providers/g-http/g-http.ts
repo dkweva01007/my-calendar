@@ -30,70 +30,6 @@ export class GHttpProvider {
 
   constructor(public  http : Http, private googlePlus: GooglePlus, private storage: Storage) {}
 
-  get(url, token){
-    if (token !== null)
-       this.headers.append('Authorization', 'Bearer ' + token);
-    let options = new RequestOptions({ headers: this.headers });
-    this.http.get(url, options).toPromise().then(
-      data => {
-        return JSON.parse( data['_body']);
-      },error => {
-        return null;
-      }
-    );
-  }
-
-  post(url, postParams, token){
-    if (token !== null)
-       this.headers.append('Authorization', 'Bearer ' + token);
-    let options = new RequestOptions({ headers: this.headers });
-    this.http.post(url, postParams, options).subscribe(data => {
-      return JSON.parse( data['_body']);
-    }, error => {
-        return null;
-    });
-  }
-
-  put(url, putParams, token){
-    if (token !== null)
-       this.headers.append('Authorization', 'Bearer ' + token);
-    let options = new RequestOptions({ headers: this.headers });
-    this.http.put(url, putParams, options).subscribe(data => {
-      return JSON.parse( data['_body']);
-    }, error => {
-        return null;
-    });
-  }
-
-  delete(url, token){
-    if (token !== null)
-       this.headers.append('Authorization', 'Bearer ' + token);
-    let options = new RequestOptions({ headers: this.headers });
-    this.http.delete(url, options).subscribe(data => {
-      return JSON.parse( data['_body']);
-    }, error => {
-        return null;
-    });
-  }
-
-  startGAPI(token) {
-
-    gapi.client.request({
-      'path': 'https://www.googleapis.com/calendar/v3/calendars/primary/events',
-      'method': 'GET',
-      'params': {
-        'key': this.googleInfo.apiKey
-      },
-      'headers': {
-        'Authorization': 'Bearer ' + token
-      }
-    })
-    .execute(function(resp) {
-      console.log('Calendar events test REs : ', resp);
-    });
-
-  }
-
   login(): Promise<any> {
     let tmp = this;
     return new Promise(function (resolve, reject) {
@@ -110,22 +46,60 @@ export class GHttpProvider {
   getMyCalendarEvents(): Promise<any> {
     let tmp = this;
     return new Promise(function (resolve, reject) {
+      tmp.queryGoogle({
+        method: 'GET', URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+        params: { 'calendarId' : 'primary' }
+      }).then((events) => {
+        console.log('Calendar res events : ', events);
+        events = events.items.reverse();
+        resolve(events);
+      }).catch(err => {reject(err);});
+    });
+  }
+  /**
+   * Flexible query function to Google API using gapi.client
+   * @param {object} params             Object containing parameters necessary to query
+   * @param {string} params.method      GET | POST | PATCH | DELETE
+   * @param {string} params.URI         URI path to query
+   * @param {object} params.params      Query parameters
+   * @param {object} params.body        Query request body
+   * @returns {object}                  Response from Google API
+   */
+  queryGoogle(params): Promise<any> {
+    let tmp = this;
+    return new Promise(function (resolve, reject) {
       tmp.storage.get('currentUserGoogleAccount').then((currentUserGoogleAccount) => {
         currentUserGoogleAccount = JSON.parse(currentUserGoogleAccount);
-        gapi.client.request({
-          'path': 'https://www.googleapis.com/calendar/v3/calendars/primary/events',
-          'method': 'GET',
-          'params': {
-            'key': tmp.googleInfo.apiKey,
-            'calendarId': 'primary'
-          },
+        let queryParams = {
+          'key': tmp.googleInfo.apiKey
+        };
+        if(params.params)
+          Object.assign(queryParams, params.params);
+        let request = {
+          'path': params.URI,
+          'method': params.method,
+          'params': queryParams,
           'headers': {
             'Authorization': 'Bearer ' + currentUserGoogleAccount.accessToken
           }
-        }).execute(function(resp) {
-          console.log('Calendar res events : ', resp);
-          resp = resp.items.reverse();
-          resolve(resp);
+        };
+        if(params.body)
+          request['body'] = params.body;
+        gapi.client.request(request).execute(function(response) {
+          console.log('Google query response : ', response);
+          if(response.hasOwnProperty('error')) {
+            if(response.error.hasOwnProperty('message') && response.error.message === "Invalid Credentials") {
+              console.log('Invalid token, calling silent login..');
+              tmp.silentLogin().then(() => {
+                gapi.client.request(request).execute(function(response) {
+                  console.log('Google query response : ', response);
+                  resolve(response);
+                });
+              });
+            }
+          } else {
+            resolve(response);
+          }
         });
       }).catch(err => {reject(err);});
     });
