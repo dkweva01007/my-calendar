@@ -9,27 +9,43 @@
   </ion-navbar>
 </ion-header>
  
-<ion-content>
+<ion-content padding>
   <ion-list>
-    <ion-label>Nom du cercle</ion-label>
-    <ion-item>
-      <ion-input type="text" placeholder="Title" [(ngModel)]="cercle_friend.name"></ion-input>
-    </ion-item>
+    <ion-list-header>
+      Nom du cercle
+    </ion-list-header>
+    <ion-item-group>
+      <ion-item>
+        <ion-input type="text" placeholder="Title" [(ngModel)]="cercle_friend.name"></ion-input>
+      </ion-item>
+    </ion-item-group>
   </ion-list>
   <ion-list>
-    <ion-label>Contacts</ion-label>
-    <ion-item>
-      <ion-input type="text" placeholder="name" [(ngModel)]="contact.name"></ion-input>
-	  <ion-input type="text" placeholder="email" [(ngModel)]="contact.email"></ion-input>
-    </ion-item>
+    <ion-list-header>
+      Contacts
+    </ion-list-header>
+    <ion-item-group>
+      <ion-item>
+        <ion-input type="text" required  placeholder="name" [(ngModel)]="contact.name"></ion-input>
+        <ion-input type="email" required  placeholder="email" [(ngModel)]="contact.email"></ion-input>
+        <button item-right ion-button small icon-only (click)="addContact()">
+          <ion-icon name="checkmark"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-item-group>
   </ion-list>
   <ion-list no-lines inset>
-    <ion-item small color="balanced" *ngFor="let friend of cercle_friend.friends">
-        <ion-label item-content>{{ friend.name }} ({{ friend.email }})</ion-label>
+    <ion-item small color="balanced" *ngFor="let friend of cercle_friend.friends; let i = index">
+        <button ion-button block outline large (click)="editContact(friend, i)">
+          {{ friend.name }} ({{ friend.email }})
+        </button>
+        <button ion-button small icon-only item-end (click)="removeContact(i)">
+          <ion-icon name="close"></ion-icon>
+        </button>
     </ion-item>
   </ion-list>
  
-  <button ion-button full icon-left id="run" (click)="save()">
-    <ion-icon name="checkmark"></ion-icon> créer cercle
+  <button ion-button full id="run" (click)="save()">
+    <ion-icon name="checkmark"></ion-icon> Valider
   </button>
 </ion-content>
