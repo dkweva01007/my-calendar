@@ -102,24 +102,7 @@ export class GHttpProvider {
         'webClientId': tmp.googleInfo.webClient.ID,
         'offline':true,
       }).then(res => {
-        tmp.storage.get('userAccounts').then((userAccounts) => {
-          tmp.storage.set('currentUserGoogleAccount', JSON.stringify(res));
-          userAccounts = JSON.parse(userAccounts);
-          console.log('this is userAccounts : ', userAccounts);
-          // If already logged in, replace account; else, add in account array
-          if(userAccounts !== null && userAccounts.some(account => account.email === res.email)) {
-            let currentAccountIndex = userAccounts.findIndex(account => account.email === res.email);
-            userAccounts[currentAccountIndex] = res;
-            tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
-          } else {
-            if(userAccounts === null)
-              userAccounts = [];
-            userAccounts.push(res);
-            tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
-          }
-          gapi.load('client');
-          resolve(res);
-        }).catch(err => {reject(err);});
+        tmp.addUserToStorage(res, resolve, reject);
       }).catch(err => {reject(err);});
     });
   }
@@ -141,6 +124,7 @@ export class GHttpProvider {
           }
         }).execute(function(resp) {
           console.log('Calendar res events : ', resp);
+          resp = resp.items.reverse();
           resolve(resp);
         });
       }).catch(err => {reject(err);});
@@ -156,26 +140,31 @@ export class GHttpProvider {
         'webClientId': tmp.googleInfo.webClient.ID,
         'offline': false,
       }).then(res => {
-        tmp.storage.get('userAccounts').then((userAccounts) => {
-          tmp.storage.set('currentUserGoogleAccount', JSON.stringify(res));
-          userAccounts = JSON.parse(userAccounts);
-          console.log('this is userAccounts : ', userAccounts);
-          // If already logged in, replace account; else, add in account array
-          if(userAccounts !== null && userAccounts.some(account => account.email === res.email)) {
-            let currentAccountIndex = userAccounts.findIndex(account => account.email === res.email);
-            userAccounts[currentAccountIndex] = res;
-            tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
-          } else {
-            if(userAccounts === null)
-              userAccounts = [];
-            userAccounts.push(res);
-            tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
-          }
-          gapi.load('client');
-          resolve(res);
-        }).catch(err => {reject(err);});
+        tmp.addUserToStorage(res, resolve, reject);
       }).catch(err => {reject(err);});
     });
+  }
+
+  addUserToStorage(res, resolve, reject) {
+    let tmp = this;
+    tmp.storage.get('userAccounts').then((userAccounts) => {
+      tmp.storage.set('currentUserGoogleAccount', JSON.stringify(res));
+      userAccounts = JSON.parse(userAccounts);
+      console.log('this is userAccounts : ', userAccounts);
+      // If already logged in, replace account; else, add in account array
+      if(userAccounts !== null && userAccounts.some(account => account.email === res.email)) {
+        let currentAccountIndex = userAccounts.findIndex(account => account.email === res.email);
+        userAccounts[currentAccountIndex] = res;
+        tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
+      } else {
+        if(userAccounts === null)
+          userAccounts = [];
+        userAccounts.push(res);
+        tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
+      }
+      gapi.load('client');
+      resolve(res);
+    }).catch(err => {reject(err);});
   }
 
   // NOT WORKING
