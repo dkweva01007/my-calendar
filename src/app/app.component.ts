@@ -4,6 +4,16 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { MenuPage } from '../pages/menu/menu';
+import * as firebase from 'firebase';
+
+const config = {
+  apiKey: 'AIzaSyBLgN9H1D5vC1AvnOAZt_7WofAfvWCWRTI',
+  authDomain: 'etna-shared-calendar.firebaseapp.com',
+  databaseURL: 'https://etna-shared-calendar.firebaseio.com',
+  projectId: 'etna-shared-calendar',
+  storageBucket: '',
+};
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -17,6 +27,7 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
     });
+    firebase.initializeApp(config);
   }
 }
 

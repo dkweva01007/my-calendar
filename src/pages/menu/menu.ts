@@ -14,7 +14,7 @@ export class MenuPage {
   rootPage = HomePage;
   // Reference to the app's root nav
   @ViewChild(Nav)nav: Nav;
- 
+
   pages = [
     { title: 'Profile', component: HomePage, index: 0, icon: 'home' },
     { title: 'Calendrier', component: CalendarPage, index: 1, icon: 'contacts' },
@@ -29,7 +29,8 @@ export class MenuPage {
 
   isActive(page) {
     // Again the Tabs Navigation
-    let childNav = this.nav.getActiveChildNav();
+    //let childNav = this.nav.getActiveChildNav();
+    let childNav = this.nav.getActiveChildNavs()[0];
     if (childNav) {
       if (childNav.getSelected() && childNav.getSelected().root === page.tabComponent) {
         return 'primary';

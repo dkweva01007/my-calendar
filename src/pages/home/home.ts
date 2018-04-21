@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GHttpProvider } from '../../providers/g-http/g-http';
+import * as firebase from 'firebase';
 
 import { CalendarPage } from '../calendar/calendar';
 
@@ -20,24 +21,37 @@ export class HomePage {
   calendarList: any;
   myIndex: number;
   isLoggedIn:boolean = false;
+  firebaseReference = firebase.database().ref('users/');
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
     if(localStorage.getItem("gToken") === null) {
       localStorage.setItem("gToken", '[]');
     }
     this.myIndex = navParams.data.tabIndex || 0;
-    this.gHttpProvider.silentLogin().then(res => {
-      console.log("silent login success: ", res);
-      this.displayName = res.displayName;
-      this.email = res.email;
-      this.familyName = res.familyName;
-      this.givenName = res.givenName;
-      this.userId = res.userId;
-      this.imageUrl = res.imageUrl;
 
-      this.isLoggedIn = true;
-      this.showCalendarPage();
-    }).catch(err => { console.log('no silent login: ', err)});
+    let connectedRef = firebase.database().ref(".info/connected");
+    connectedRef.on("value", function(snap) {
+      // is connected to database
+      if (snap.val() === true) {
+        this.gHttpProvider.silentLogin().then(res => {
+          console.log("silent login success: ", res);
+          this.displayName = res.displayName;
+          this.email = res.email;
+          this.familyName = res.familyName;
+          this.givenName = res.givenName;
+          this.userId = res.userId;
+          this.imageUrl = res.imageUrl;
+
+          this.isLoggedIn = true;
+          this.showCalendarPage();
+        }).catch(err => { console.log('no silent login: ', err)});
+      } else {
+        alert("Entering offline");
+      }
+    });
+
+
+
   }
 
   login() {

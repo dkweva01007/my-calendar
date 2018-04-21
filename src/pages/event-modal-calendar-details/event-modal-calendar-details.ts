@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams, ViewController, AlertController, ModalController} from 'ionic-angular';
-import { GHttpProvider } from '../../providers/g-http/g-http';
 import * as moment from 'moment';
-import {EventModalPage} from "../event-modal/event-modal";
 
 /**
  * Generated class for the EventModalCalendarDetailsPage page.
@@ -22,7 +20,7 @@ export class EventModalCalendarDetailsPage {
   selectedEvent: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController,
-              private alertCtrl: AlertController, private gHttpProvider: GHttpProvider, private modalCtrl: ModalController) {
+              private alertCtrl: AlertController, private modalCtrl: ModalController) {
   }
 
   ionViewDidLoad() {
