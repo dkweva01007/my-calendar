@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { GHttpProvider } from '../../providers/g-http/g-http';
-
-import * as moment from 'moment';
 
 @Component({
   selector: 'page-calendar',
@@ -47,7 +45,8 @@ export class CalendarPage {
     }
   };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController,
+              private gHttpProvider: GHttpProvider) {
     this.myIndex = navParams.data.tabIndex || 0;
     this.showAllGoogleEventsOnCalendar();
   }
@@ -66,25 +65,19 @@ export class CalendarPage {
   }
 
   addGoogleEvent(googleEvent) {
-    if(googleEvent.summary === "Tryyyyyyy" || googleEvent.summary === "Vacation") {
-      console.log('this is Tryyyyyyy: ', googleEvent);
-    }
     if(googleEvent && googleEvent.hasOwnProperty('start') && googleEvent.hasOwnProperty('end')) {
-
-      if(googleEvent.summary === "Tryyyyyyy") {
-        console.log('this is pushing now: ');
-      }
       this.eventSource.push({
+        id: googleEvent.id,
+        status: googleEvent.status,
         title: googleEvent.summary,
+        creator: googleEvent.creator.hasOwnProperty('self') ? 'Yourself' : googleEvent.creator.email,
         startTime: googleEvent.start.hasOwnProperty('dateTime') ? new Date(googleEvent.start.dateTime) : new Date(googleEvent.start.date),
         endTime: googleEvent.end.hasOwnProperty('dateTime') ? new Date(googleEvent.end.dateTime) : new Date(googleEvent.end.date),
-        allDay: googleEvent.start.hasOwnProperty('date')
+        allDay: googleEvent.start.hasOwnProperty('date'),
+        location: googleEvent.hasOwnProperty('location') ? googleEvent.location : '',
+        attendees: googleEvent.hasOwnProperty('attendees') ? googleEvent.attendees : '',
+        description: googleEvent.hasOwnProperty('description') ? googleEvent.description : ''
       });
-      if(googleEvent.summary === "Tryyyyyyy" || googleEvent.summary === "Vacation") {
-        console.log('last ? ', this.eventSource[this.eventSource.length - 1])
-      }
-    } else {
-      console.log('incorrect googleEvent format: ', googleEvent);
     }
   }
 
@@ -100,16 +93,19 @@ export class CalendarPage {
     this.viewTitle = title;
   }
 
-  onEventSelected(event) {
-    let start = moment(event.startTime).format('LLLL');
-    let end = moment(event.endTime).format('LLLL');
-
-    let alert = this.alertCtrl.create({
-      title: '' + event.title,
-      subTitle: 'From: ' + start + '<br>To: ' + end,
-      buttons: ['OK']
+  onEventSelected(selectedEvent) {
+    let modal = this.modalCtrl.create('EventModalCalendarDetailsPage', {selectedEvent: selectedEvent});
+    modal.present();
+    modal.onDidDismiss(params => {
+      if(params && params.action === "delete") {
+        this.gHttpProvider.queryGoogle({
+          method: 'DELETE', params: { 'calendarId' : 'primary' },
+          URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events/' + params.event.id
+        }).then(response => {
+          this.showAllGoogleEventsOnCalendar();
+        }).catch(err => console.error('err on deleting event: ', err));
+      }
     });
-    alert.present();
   }
 
   changeMode(mode) {

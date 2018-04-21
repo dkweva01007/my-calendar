@@ -15,8 +15,8 @@ import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angul
 })
 export class EventModalAddCerclePage {
 
-  cercle_friend= {name: "", friends: []}
-  contact= {name: null, email: null}
+  cercle_friend= {name: "", friends: []};
+  contact= {name: null, email: null};
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {
     this.cercle_friend.name = this.navParams.get('name') != null ? this.navParams.get('name') : "Nouveau Cercle";
@@ -26,7 +26,7 @@ export class EventModalAddCerclePage {
   cancel() {
     this.viewCtrl.dismiss();
   }
- 
+
   save() {
     this.viewCtrl.dismiss(this.cercle_friend);
   }

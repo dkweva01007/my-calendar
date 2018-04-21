@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons start>
+      <button ion-button icon-only (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title> Calendar event  </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf="selectedEvent">
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Title</ion-label>
+      <ion-input type="text" [(ngModel)]="selectedEvent.title" [disabled]="true"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Creator</ion-label>
+      <ion-input type="text" [(ngModel)]="selectedEvent.creator" [disabled]="true"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Status</ion-label>
+      <ion-input type="text" [(ngModel)]="selectedEvent.status" [disabled]="true"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Status</ion-label>
+      <ion-input type="text" [(ngModel)]="selectedEvent.startTimeFormatted" [disabled]="true"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Status</ion-label>
+      <ion-input type="text" [(ngModel)]="selectedEvent.endTimeFormatted" [disabled]="true"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Location</ion-label>
+      <ion-input type="text" [(ngModel)]="selectedEvent.location" [disabled]="true"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Description</ion-label>
+      <ion-textarea rows="5" [(ngModel)]="selectedEvent.description" [disabled]="true"></ion-textarea>
+    </ion-item>
+    <ion-row *ngIf="selectedEvent.hasOwnProperty('attendees')">
+      <ion-item>
+        Attendees
+      </ion-item>
+      <ion-item *ngFor="let attendee of selectedEvent.attendees">
+        {{attendee.email}}
+        <ion-note item-end>
+          {{attendee.responseStatus}}
+        </ion-note>
+      </ion-item>
+    </ion-row>
+  </ion-list>
+
+  <!--button ion-button full icon-left id="run">
+    <ion-icon name="checkmark"></ion-icon> créer cercle
+  </button-->
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6>
+        <button ion-button full (click)="edit()">
+          Edit
+        </button>
+      </ion-col>
+      <ion-col col-6>
+        <button ion-button full color="danger" (click)="delete()">
+          Delete
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-content *ngIf="selectedEvent === undefined">
+  <ion-list>
+    Error occured while loading event.
+  </ion-list>
+</ion-content>

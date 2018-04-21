@@ -17,13 +17,29 @@ import * as moment from 'moment';
 })
 export class EventModalPage {
 
-  event = { startTime: new Date().toISOString(), endTime: new Date().toISOString(), allDay: false, title: "" };
+  editMode:boolean = false;
+  event = {
+    startTime: new Date().toISOString(), endTime: new Date().toISOString(),
+    allDay: false, title: "", location: "", description: "", id: null
+  };
   minDate = new Date().toISOString();
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
-	let preselectedDate = moment(this.navParams.get('selectedDay')).format();
-    this.event.startTime = preselectedDate;
-    this.event.endTime = preselectedDate;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController,
+              private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
+    if(this.navParams.get('selectedDay')) {
+      this.editMode = false;
+      let preselectedDate = moment(this.navParams.get('selectedDay')).format();
+      this.event.startTime = preselectedDate;
+      this.event.endTime = preselectedDate;
+    }
+    if(this.navParams.get('selectedEvent') !== undefined) {
+      this.editMode = true;
+      this.event = this.navParams.get('selectedEvent');
+      this.event.location = this.event.location != '-' ? this.event.location : '';
+      this.event.description = this.event.description != '-' ? this.event.description : '';
+      this.event.startTime = moment(this.event.startTime).format();
+      this.event.endTime = moment(this.event.endTime).format();
+    }
   }
 
   cancel() {
@@ -52,7 +68,19 @@ export class EventModalPage {
   }
 
   saveToGoogleCalendar() {
-    let resource = { 'end': {}, 'start': {}, 'summary': this.event.title };
+    let queryParams = {
+      method: this.editMode ? "PATCH" : "POST",
+      URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+    };
+    if(this.editMode)
+      queryParams.URI += '/' + this.event.id;
+    let resource = {
+      'summary': this.event.title, 'end': {}, 'start': {},
+      //'end': { 'dateTime': new Date(this.event.endTime).toISOString() },
+      //'start': { 'dateTime': new Date(this.event.startTime).toISOString() },
+      'location': this.event.location.length != 0 ? this.event.location : null,
+      'description': this.event.description.length != 0 ? this.event.description : null
+    };
     if(this.event.allDay) {
       resource.start['date'] = moment(new Date(this.event.startTime)).format('YYYY-MM-DD');
       resource.end['date'] = moment(new Date(this.event.endTime)).format('YYYY-MM-DD');
@@ -62,10 +90,11 @@ export class EventModalPage {
       resource.start['dateTime'] = new Date(this.event.startTime).toISOString();
       resource.end['dateTime'] = new Date(this.event.endTime).toISOString();
     }
+    console.log('save new event w/ request queryParams : ', queryParams);
     console.log('save new event w/ request body : ', resource);
     this.gHttpProvider.queryGoogle({
-      method: 'POST', params: { 'calendarId' : 'primary' }, body: resource,
-      URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+      method: queryParams.method, URI: queryParams.URI,
+      params: { 'calendarId' : 'primary' }, body: resource
     }).then(savedEvent => {
       console.log('inserted event : ', savedEvent);
       this.viewCtrl.dismiss(savedEvent);

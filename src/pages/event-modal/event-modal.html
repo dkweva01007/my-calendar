@@ -5,14 +5,17 @@
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-title>Create an event</ion-title>
+    <ion-title *ngIf="editMode">Edit an event</ion-title>
+    <ion-title *ngIf="!editMode">Create an event</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
+
     <ion-item>
-      <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+      <ion-label floating>Title</ion-label>
+      <ion-input type="text" [(ngModel)]="event.title"></ion-input>
     </ion-item>
 
     <ion-item>
@@ -26,12 +29,22 @@
     </ion-item>
 
     <ion-item>
+      <ion-label floating>Location</ion-label>
+      <ion-input type="text" [(ngModel)]="event.location"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Description</ion-label>
+      <ion-textarea rows="5" [(ngModel)]="event.description"></ion-textarea>
+    </ion-item>
+
+    <!--ion-item>
       <ion-label>All Day?</ion-label>
       <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
-    </ion-item>
+    </ion-item-->
   </ion-list>
 
-  <button ion-button full icon-left (click)="save()">
-    <ion-icon name="checkmark"></ion-icon> Add Event
+  <button ion-button full icon-left (click)="save()" color="secondary">
+    Save
   </button>
 </ion-content>

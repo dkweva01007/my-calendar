@@ -1,9 +1,9 @@
 import { Injectable, Component } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers } from '@angular/http';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Storage } from '@ionic/storage';
 
-declare var gapi: any;
+declare let gapi: any;
 
 /*
   Generated class for the GHttpProvider provider.
@@ -87,7 +87,9 @@ export class GHttpProvider {
           request['body'] = params.body;
         gapi.client.request(request).execute(function(response) {
           console.log('Google query response : ', response);
-          if(response.hasOwnProperty('error')) {
+          if(response === undefined || !response.hasOwnProperty('error')) {
+            resolve(response);
+          } else {
             if(response.error.hasOwnProperty('message') && response.error.message === "Invalid Credentials") {
               console.log('Invalid token, calling silent login..');
               tmp.silentLogin().then(() => {
@@ -97,8 +99,6 @@ export class GHttpProvider {
                 });
               });
             }
-          } else {
-            resolve(response);
           }
         });
       }).catch(err => {reject(err);});
