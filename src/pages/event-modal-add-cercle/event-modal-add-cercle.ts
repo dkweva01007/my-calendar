@@ -54,7 +54,7 @@ export class EventModalAddCerclePage {
   cancel() {
     this.viewCtrl.dismiss();
   }
- 
+
   save() {
     this.viewCtrl.dismiss(this.cercle_friend);
   }

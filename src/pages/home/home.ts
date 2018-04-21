@@ -36,6 +36,7 @@ export class HomePage {
       this.imageUrl = res.imageUrl;
 
       this.isLoggedIn = true;
+      this.showCalendarPage();
     }).catch(err => { console.log('no silent login: ', err)});
   }
 
