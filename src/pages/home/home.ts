@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, MenuController } from 'ionic-angular';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GHttpProvider } from '../../providers/g-http/g-http';
+import { AuthProvider } from '../../providers/auth/auth';
 import * as firebase from 'firebase';
 
 import { CalendarPage } from '../calendar/calendar';
+import {LoginPage} from "../login/login";
 
 @Component({
   selector: 'page-home',
@@ -12,76 +14,31 @@ import { CalendarPage } from '../calendar/calendar';
   providers: [GooglePlus]
 })
 export class HomePage {
-  displayName: any;
-  email: any;
-  familyName: any;
-  givenName: any;
-  userId: any;
-  imageUrl: any;
-  calendarList: any;
-  myIndex: number;
-  isLoggedIn:boolean = false;
-  firebaseReference = firebase.database().ref('users/');
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private googlePlus: GooglePlus, private gHttpProvider: GHttpProvider) {
-    if(localStorage.getItem("gToken") === null) {
+  user: any;
+  myIndex: number;
+
+  // TODO 1.) add friends
+  // TODO 2.) add friends to circles
+  // TODO 3.) add circles as attendees
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private googlePlus: GooglePlus,
+              private gHttpProvider: GHttpProvider, public menuCtrl: MenuController, private auth: AuthProvider) {
+    if(localStorage.getItem("gToken") === null)
       localStorage.setItem("gToken", '[]');
-    }
     this.myIndex = navParams.data.tabIndex || 0;
 
-    let connectedRef = firebase.database().ref(".info/connected");
-    connectedRef.on("value", function(snap) {
-      // is connected to database
-      if (snap.val() === true) {
-        this.gHttpProvider.silentLogin().then(res => {
-          console.log("silent login success: ", res);
-          this.displayName = res.displayName;
-          this.email = res.email;
-          this.familyName = res.familyName;
-          this.givenName = res.givenName;
-          this.userId = res.userId;
-          this.imageUrl = res.imageUrl;
-
-          this.isLoggedIn = true;
-          this.showCalendarPage();
-        }).catch(err => { console.log('no silent login: ', err)});
-      } else {
-        alert("Entering offline");
-      }
-    });
-
-
-
-  }
-
-  login() {
-    this.gHttpProvider.login()
-    .then(res => {
-      console.log(res);
-      this.displayName = res.displayName;
-      this.email = res.email;
-      this.familyName = res.familyName;
-      this.givenName = res.givenName;
-      this.userId = res.userId;
-      this.imageUrl = res.imageUrl;
-
-      this.isLoggedIn = true;
-    })
-    .catch(err => console.error(err));
+    this.menuCtrl.enable(true, 'myMenu');
+    this.user = firebase.auth().currentUser;
+    console.log('HomePage |user: ', this.user);
   }
 
   logout() {
-    this.googlePlus.logout()
-      .then(res => {
-        console.log(res);
-        this.displayName = "";
-        this.email = "";
-        this.familyName = "";
-        this.givenName = "";
-        this.userId = "";
-        this.imageUrl = "";
-
-        this.isLoggedIn = false;
+    this.auth.logout()
+      .then(() => {
+        console.log('MenuPage | logged out');
+        this.navCtrl.setRoot(LoginPage);
+        this.navCtrl.popToRoot();
       })
       .catch(err => console.error(err));
   }
@@ -93,19 +50,7 @@ export class HomePage {
   // NOT WORKING
   refreshToken() {
     this.gHttpProvider.refreshAccessToken().then(res => {
-      console.log(res);
-      this.displayName = res.displayName;
-      this.email = res.email;
-      this.familyName = res.familyName;
-      this.givenName = res.givenName;
-      this.userId = res.userId;
-      this.imageUrl = res.imageUrl;
-
-      this.isLoggedIn = true;
     }).catch(err => console.error(err));
   }
-
-
-
 
 }

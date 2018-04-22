@@ -2,14 +2,6 @@ import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams, ViewController, AlertController, ModalController} from 'ionic-angular';
 import * as moment from 'moment';
 
-/**
- * Generated class for the EventModalCalendarDetailsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-
 @IonicPage()
 @Component({
   selector: 'page-event-modal-calendar-details',

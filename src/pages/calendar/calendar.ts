@@ -52,16 +52,17 @@ export class CalendarPage {
   }
 
   showAllGoogleEventsOnCalendar() {
-    this.gHttpProvider.getMyCalendarEvents()
-      .then(events => {
-        this.eventSource = [];
-        let tmp = this;
-        console.log('showAllGoogleEventsOnCalendar| all events : ', events);
-        events.forEach(function (event) {
-          tmp.addGoogleEvent(event);
-        });
-      })
-      .catch(err => console.error(err));
+    this.gHttpProvider.queryGoogle({
+      method: 'GET', params: { 'calendarId' : 'primary' },
+      URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+    }).then(primaryCalendar => {
+      this.eventSource = [];
+      let tmp = this
+        , events = primaryCalendar.items.reverse();
+      events.forEach(function (event) {
+        tmp.addGoogleEvent(event);
+      });
+    }).catch(err => console.error('CalendarPate | Error getting calendar events : ', err));
   }
 
   addGoogleEvent(googleEvent) {

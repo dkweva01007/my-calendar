@@ -11,40 +11,57 @@ import { HomePage } from '../pages/home/home';
 import { MenuPage } from '../pages/menu/menu';
 import { CalendarPage } from '../pages/calendar/calendar';
 import { CerclePage } from '../pages/cercle/cercle';
+import { LoginPage } from '../pages/login/login';
 
 import { NgCalendarModule  } from 'ionic2-calendar';
 import { GHttpProvider } from '../providers/g-http/g-http';
 import { IonicStorageModule } from '@ionic/storage';
 
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireAuth } from 'angularfire2/auth';
+import * as firebase from 'firebase';
+import { AuthProvider } from '../providers/auth/auth';
+
+const config = {
+  apiKey: 'AIzaSyCG5CWzIexkOJpEfhjEfkp7VqKjD6mDi4A',
+  authDomain: 'my-calendar-app-6721a.firebaseapp.com',
+  databaseURL: 'https://my-calendar-app-6721a.firebaseio.com',
+  projectId: 'my-calendar-app-6721a',
+  storageBucket: 'my-calendar-app-6721a.appspot.com',
+  messagingSenderId: '235375545183'
+};
+
+firebase.initializeApp(config);
+const pages = [
+  MyApp,
+  HomePage,
+  MenuPage,
+  CalendarPage,
+  CerclePage,
+  LoginPage
+];
 @NgModule({
-  declarations: [
-    MyApp,
-    HomePage,
-    MenuPage,
-    CalendarPage,
-    CerclePage
-  ],
+  bootstrap: [IonicApp],
+  declarations: pages,
+  entryComponents: pages,
   imports: [
 	  NgCalendarModule,
     BrowserModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
+    AngularFireModule.initializeApp(config),
     HttpModule
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    HomePage,
-    MenuPage,
-    CalendarPage,
-    CerclePage
   ],
   providers: [
     GooglePlus,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    GHttpProvider
+    GHttpProvider,
+    AngularFireAuth,
+    AuthProvider,
+    AuthProvider,
+    AuthProvider
   ]
 })
 export class AppModule {}

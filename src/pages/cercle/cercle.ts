@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController } from 'ionic-angular';
 
-/**
- * Generated class for the CerclePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @Component({
   selector: 'page-cercle',
   templateUrl: 'cercle.html',
@@ -24,14 +17,14 @@ export class CerclePage {
     this.cercle_friends = JSON.parse(localStorage.getItem("cercle_friends")) ? JSON.parse(localStorage.getItem("cercle_friends")) : [];
 	console.log( this.cercle_friends);
   }
-  
+
   addCercleFriend() {
     let modal = this.modalCtrl.create('EventModalAddCerclePage',{name: null, friends: null, isedit: null});
     modal.present();
     modal.onDidDismiss(data => {
       if (data) {
         let eventData = data;
- 
+
         let events = this.cercle_friends;
         events.push(eventData);
         this.cercle_friends = [];
@@ -42,7 +35,7 @@ export class CerclePage {
       }
     });
   }
-  
+
   editCercleFriend(cercle_friend, i) {
 	let tmp = JSON.parse(JSON.stringify(cercle_friend));
     let modal = this.modalCtrl.create('EventModalAddCerclePage',{name: tmp.name, friends: tmp.friends});
@@ -50,7 +43,7 @@ export class CerclePage {
     modal.onDidDismiss(data => {
       if (data) {
         let eventData = data;
- 
+
         let events = this.cercle_friends;
 		events.splice(i, 1, eventData);
         this.cercle_friends = [];

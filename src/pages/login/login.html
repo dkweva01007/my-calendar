@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>My Shared Calendar</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid style="height: 100%">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+      <!--button ion-button full large strong color="primary"-->
+      <button ion-button full large color="primary" (click)="login()">
+        <ion-icon name="logo-googleplus" style="padding-right: 7px;"></ion-icon>
+        Log in with Google
+      </button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

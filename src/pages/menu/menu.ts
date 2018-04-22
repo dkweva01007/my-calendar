@@ -1,8 +1,11 @@
 import { HomePage } from './../home/home';
+import { LoginPage } from './../login/login';
 import { CalendarPage } from './../calendar/calendar';
 import { CerclePage } from './../cercle/cercle';
 import { Component, ViewChild, } from '@angular/core';
 import { IonicPage, NavController, Nav } from 'ionic-angular';
+import { AuthProvider } from '../../providers/auth/auth';
+
 
 @IonicPage()
 @Component({
@@ -11,17 +14,18 @@ import { IonicPage, NavController, Nav } from 'ionic-angular';
 })
 
 export class MenuPage {
-  rootPage = HomePage;
+  //rootPage = HomePage;
+  rootPage = LoginPage;
   // Reference to the app's root nav
   @ViewChild(Nav)nav: Nav;
 
   pages = [
     { title: 'Profile', component: HomePage, index: 0, icon: 'home' },
-    { title: 'Calendrier', component: CalendarPage, index: 1, icon: 'contacts' },
+    { title: 'Calendrier', component: CalendarPage, index: 1, icon: 'calendar' },
     { title: 'Cercle d\'ami', component: CerclePage, index: 2, icon: 'contacts' },
   ];
 
-  constructor(public navCtrl: NavController) { }
+  constructor(public navCtrl: NavController, private auth: AuthProvider) { }
 
   openPage(page) {
     this.nav.setRoot(page.component);
@@ -43,4 +47,15 @@ export class MenuPage {
     }
     return;
   }
+
+  logOut() {
+    this.auth.logout()
+      .then(() => {
+        console.log('MenuPage | logged out');
+        this.navCtrl.setRoot(LoginPage);
+        this.navCtrl.popToRoot();
+      })
+      .catch(err => console.error(err));
+  }
+
 }

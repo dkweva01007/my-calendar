@@ -11,22 +11,13 @@
 
 
 <ion-content padding>
-  <div *ngIf="isLoggedIn">
-    <h1>Welcome, {{displayName}}!</h1>
-    <p>Email: {{email}}<br>
-      Family Name: {{familyName}}<br>
-      Given Name: {{givenName}}<br>
-      User ID: {{userId}}</p>
+    <h1>Welcome, {{user.displayName}}!</h1>
+    <p>Email: {{user.email}}<br>
+      User ID: {{user.uid}}</p>
     <p><ion-avatar item-left>
-        <img src="{{imageUrl}}">
+        <img src="{{user.photoURL}}">
        </ion-avatar></p>
     <p><button ion-button (click)="showCalendarPage()">Go to Calendar</button></p>
     <p><button ion-button (click)="refreshToken()">Refresh Token</button></p>
     <p><button ion-button (click)="logout()">Logout From Google</button></p>
-  </div>
-
-  <div *ngIf="!isLoggedIn">
-    <h1>Please Login to see your Google Account Information</h1>
-    <p><button ion-button (click)="login()">Login With Google</button></p>
-  </div>
 </ion-content>

@@ -3,13 +3,6 @@ import { IonicPage, NavController, NavParams, ViewController, AlertController } 
 import { GHttpProvider } from '../../providers/g-http/g-http';
 import * as moment from 'moment';
 
-/**
- * Generated class for the EventModalPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage()
 @Component({
   selector: 'page-event-modal',

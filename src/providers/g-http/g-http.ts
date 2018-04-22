@@ -5,12 +5,6 @@ import { Storage } from '@ionic/storage';
 
 declare let gapi: any;
 
-/*
-  Generated class for the GHttpProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 @Component({
   providers: [GooglePlus]
@@ -30,32 +24,58 @@ export class GHttpProvider {
 
   constructor(public  http : Http, private googlePlus: GooglePlus, private storage: Storage) {}
 
+  silentLogin(): Promise<any> {
+    let tmp = this;
+    return new Promise(function (resolve, reject) {
+      console.log('Google Provider | Calling silentLogin..');
+      tmp.googlePlus.trySilentLogin({
+        'scopes': tmp.googleInfo.scopes,
+        'webClientId': tmp.googleInfo.webClient.ID,
+        'offline': false,
+      }).then(res => {
+        console.log('Google Provider | Success | res: ', res);
+        gapi.load('client');
+        resolve(res);
+      }).catch(err => {
+        console.log('Google Provider | Fail | err: ', err);
+        reject(err);
+      });
+    });
+  }
+
   login(): Promise<any> {
     let tmp = this;
     return new Promise(function (resolve, reject) {
+      console.log('Google Provider | Calling login..');
       tmp.googlePlus.login({
         'scopes': tmp.googleInfo.scopes,
         'webClientId': tmp.googleInfo.webClient.ID,
         'offline':true,
       }).then(res => {
-        tmp.addUserToStorage(res, resolve, reject);
-      }).catch(err => {reject(err);});
+        console.log('Google Provider | Success | res: ', res);
+        gapi.load('client');
+        resolve(res);
+      }).catch(err => {
+        console.log('Google Provider | Fail | err: ', err);
+        reject(err);
+      });
     });
   }
 
-  getMyCalendarEvents(): Promise<any> {
+  logout(): Promise<any> {
     let tmp = this;
     return new Promise(function (resolve, reject) {
-      tmp.queryGoogle({
-        method: 'GET', URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events',
-        params: { 'calendarId' : 'primary' }
-      }).then((events) => {
-        console.log('Calendar res events : ', events);
-        events = events.items.reverse();
-        resolve(events);
-      }).catch(err => {reject(err);});
+      console.log('Google Provider | Calling logout..');
+      tmp.googlePlus.logout().then(res => {
+        console.log('Google Provider | Success | res: ', res);
+        resolve();
+      }).catch(err => {
+        console.log('Google Provider | Fail | err: ', err);
+        reject(err);
+      });
     });
   }
+
   /**
    * Flexible query function to Google API using gapi.client
    * @param {object} params             Object containing parameters necessary to query
@@ -103,42 +123,6 @@ export class GHttpProvider {
         });
       }).catch(err => {reject(err);});
     });
-  }
-
-  silentLogin(): Promise<any> {
-    let tmp = this;
-    return new Promise(function (resolve, reject) {
-      console.log('inside promise of silentLogin');
-      tmp.googlePlus.trySilentLogin({
-        'scopes': tmp.googleInfo.scopes,
-        'webClientId': tmp.googleInfo.webClient.ID,
-        'offline': false,
-      }).then(res => {
-        tmp.addUserToStorage(res, resolve, reject);
-      }).catch(err => {reject(err);});
-    });
-  }
-
-  addUserToStorage(res, resolve, reject) {
-    let tmp = this;
-    tmp.storage.get('userAccounts').then((userAccounts) => {
-      tmp.storage.set('currentUserGoogleAccount', JSON.stringify(res));
-      userAccounts = JSON.parse(userAccounts);
-      console.log('this is userAccounts : ', userAccounts);
-      // If already logged in, replace account; else, add in account array
-      if(userAccounts !== null && userAccounts.some(account => account.email === res.email)) {
-        let currentAccountIndex = userAccounts.findIndex(account => account.email === res.email);
-        userAccounts[currentAccountIndex] = res;
-        tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
-      } else {
-        if(userAccounts === null)
-          userAccounts = [];
-        userAccounts.push(res);
-        tmp.storage.set('userAccounts', JSON.stringify(userAccounts));
-      }
-      gapi.load('client');
-      resolve(res);
-    }).catch(err => {reject(err);});
   }
 
   // NOT WORKING

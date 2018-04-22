@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
-/**
- * Generated class for the EventModalPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage()
 @Component({
   selector: 'page-event-modal-add-cercle',
@@ -20,7 +13,7 @@ export class EventModalAddCerclePage {
   isedit = -1;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {}
-  
+
   ionViewDidLoad() {
     this.cercle_friend = {
       name: this.navParams.get('name') != null ? this.navParams.get('name') : "Nouveau Cercle",
@@ -40,17 +33,17 @@ export class EventModalAddCerclePage {
       this.contact = {name: null, email: null};
     }
   }
-  
-  
+
+
   editContact(contact, i) {
     this.contact = contact;
 	this.isedit = i;
   }
-  
+
   removeContact(i) {
     this.cercle_friend.friends.splice(i, 1);
   }
-  
+
   cancel() {
     this.viewCtrl.dismiss();
   }

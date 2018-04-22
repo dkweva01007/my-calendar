@@ -1,15 +1,19 @@
-<ion-menu [content]="content">
+<ion-menu id="myMenu" [content]="content">
   <ion-header>
     <ion-toolbar>
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
- 
+
   <ion-content>
     <ion-list>
       <button ion-item menuClose *ngFor="let p of pages" (click)="openPage(p)">
         <ion-icon item-start [name]="p.icon" [color]="isActive(p)"></ion-icon>
         {{ p.title }}
+      </button>
+      <button ion-item menuClose (click)="logOut()">
+        <ion-icon item-start name="log-out"></ion-icon>
+        Log out
       </button>
     </ion-list>
   </ion-content>

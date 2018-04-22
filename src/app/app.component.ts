@@ -4,15 +4,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { MenuPage } from '../pages/menu/menu';
-import * as firebase from 'firebase';
-
-const config = {
-  apiKey: 'AIzaSyBLgN9H1D5vC1AvnOAZt_7WofAfvWCWRTI',
-  authDomain: 'etna-shared-calendar.firebaseapp.com',
-  databaseURL: 'https://etna-shared-calendar.firebaseio.com',
-  projectId: 'etna-shared-calendar',
-  storageBucket: '',
-};
+import { AuthProvider } from '../providers/auth/auth';
+//import * as firebase from 'firebase';
 
 @Component({
   templateUrl: 'app.html'
@@ -20,14 +13,14 @@ const config = {
 export class MyApp {
   rootPage:any = MenuPage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private auth: AuthProvider) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
     });
-    firebase.initializeApp(config);
+    //firebase.initializeApp(config);
   }
 }
 
