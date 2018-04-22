@@ -5,8 +5,9 @@ import { GHttpProvider } from '../../providers/g-http/g-http';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as firebase from 'firebase';
 
+import { EventModalAddCerclePage } from '../event-modal-add-cercle/event-modal-add-cercle';
 import { CalendarPage } from '../calendar/calendar';
-import {LoginPage} from "../login/login";
+import { LoginPage } from "../login/login";
 
 @Component({
   selector: 'page-home',
@@ -15,6 +16,7 @@ import {LoginPage} from "../login/login";
 })
 export class HomePage {
 
+  //user: { uid: '', email: '', displayName: '' };
   user: any;
   myIndex: number;
 
@@ -30,7 +32,8 @@ export class HomePage {
 
     this.menuCtrl.enable(true, 'myMenu');
     this.user = firebase.auth().currentUser;
-    console.log('HomePage |user: ', this.user);
+    // TODO : delete code below
+    this.navCtrl.push(EventModalAddCerclePage);
   }
 
   logout() {

@@ -7,6 +7,9 @@ import { Storage } from '@ionic/storage';
 export class AuthProvider {
 
   constructor(private gHttpProvider: GHttpProvider, private storage: Storage) {
+
+    // TODO : catch cut connection to firebase database, once connected again, save all events via google calendar API
+
     firebase.auth().onAuthStateChanged( user => {
       if (user){
         console.log('Auth Provider | firebase onAuthStateChanged | user : ', user);

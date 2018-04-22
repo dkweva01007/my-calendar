@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import * as firebase from "firebase";
 
 @IonicPage()
 @Component({
@@ -12,7 +13,14 @@ export class EventModalAddCerclePage {
   contact = {};
   isedit = -1;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {}
+  users: any;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {
+    this.users = firebase.database().ref('users').once('value')
+      .then(snapshot => snapshot.val()).then(users => {
+        console.log('retrieved users: ', users);
+      });
+  }
 
   ionViewDidLoad() {
     this.cercle_friend = {

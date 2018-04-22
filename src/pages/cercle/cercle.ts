@@ -6,6 +6,7 @@ import { NavController, NavParams, ModalController } from 'ionic-angular';
   templateUrl: 'cercle.html',
 })
 export class CerclePage {
+
   myIndex: number;
   cercle_friends: any;
 
