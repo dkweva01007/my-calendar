@@ -5,6 +5,7 @@ import * as firebase from "firebase";
 import 'rxjs/add/operator/debounceTime';
 import { DatabaseProvider } from '../../providers/database/database';
 import { AuthProvider } from '../../providers/auth/auth';
+import { GHttpProvider } from '../../providers/g-http/g-http';
 
 @IonicPage()
 @Component({
@@ -21,6 +22,7 @@ export class EventModalAddCerclePage {
   errorMsg: string = undefined;
   users: any;
   circleName: string = 'Nouveau Cercle';
+  calendarID: any;
   usersOriginal: any;
   usersSelected: any;
   searchTerm: string = '';
@@ -28,7 +30,7 @@ export class EventModalAddCerclePage {
   searching: any = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController,
-              private fireDB: DatabaseProvider, private auth: AuthProvider, private alertCtrl: AlertController) {
+              private fireDB: DatabaseProvider, private auth: AuthProvider, private alertCtrl: AlertController, private gHttpProvider: GHttpProvider) {
     this.searchControl = new FormControl();
   }
 
@@ -47,6 +49,7 @@ export class EventModalAddCerclePage {
       this.editMode = true;
       let selectedCircle = this.navParams.get('selectedCircle');
       this.circleName = selectedCircle.name;
+      this.calendarID = selectedCircle.calendarID;
       for (let member of selectedCircle.members) {
         this.usersSelected.push(member);
       }
@@ -105,19 +108,25 @@ export class EventModalAddCerclePage {
   }
 
   insertCircle() {
-    this.fireDB.insert({
-      table: 'circle',
-      userID: this.auth.getCurrentUser().uid,
-      newData: {
-        name: this.circleName,
-        members: this.usersSelected.reduce((obj, user) => (
-          obj[user.uid] = {email: user.email, displayName: user.displayName}, obj
-        ) ,{})
-      }
-    }).then(() => this.viewCtrl.dismiss()).catch(err => {
-      console.log('Event Modal Add Circle | Save | Err : ', err);
-      this.errorMsg = err;
-    });
+    this.gHttpProvider.queryGoogle({
+      method: 'POST', body: { 'summary': this.circleName },
+      URI: 'https://www.googleapis.com/calendar/v3/calendars'
+    }).then(savedCalendar => {
+      this.fireDB.insert({
+        table: 'circle',
+        userID: this.auth.getCurrentUser().uid,
+        newData: {
+          name: this.circleName,
+          calendarID: savedCalendar.id,
+          members: this.usersSelected.reduce((obj, user) => (
+            obj[user.uid] = {email: user.email, displayName: user.displayName}, obj
+          ) ,{})
+        }
+      }).then(() => this.viewCtrl.dismiss()).catch(err => {
+        console.log('Event Modal Add Circle | Save | Err : ', err);
+        this.errorMsg = err;
+      });
+    }).catch(err => console.error('Event Modal Circle | Insert Circle | Create Calendar | err:  ', err));
   }
 
   updateCircle() {
@@ -151,16 +160,20 @@ export class EventModalAddCerclePage {
         {
           text: 'Delete',
           handler: () => {
-            this.fireDB.delete({
-              table: 'circle', itemKey: this.circleName,
-              userID: this.auth.getCurrentUser().uid
-            }).then(() => {
-              this.viewCtrl.dismiss();
-            }).catch(err => {
-              console.log('Event Add Circle Modal | Delete | err: ', err);
-              this.errorMsg = JSON.stringify(err);
-            })
-
+            this.gHttpProvider.queryGoogle({
+              method: 'DELETE',
+              URI: 'https://www.googleapis.com/calendar/v3/calendars/'+ this.calendarID
+            }).then(savedCalendar => {
+              this.fireDB.delete({
+                table: 'circle', itemKey: this.circleName,
+                userID: this.auth.getCurrentUser().uid
+              }).then(() => {
+                this.viewCtrl.dismiss();
+              }).catch(err => {
+                console.log('Event Add Circle Modal | Delete | err: ', err);
+                this.errorMsg = JSON.stringify(err);
+              })
+            }).catch(err => console.error('Event Modal Circle | Delete Circle | Delete Calendar | err:  ', err));
           }
         }
       ]
@@ -168,35 +181,8 @@ export class EventModalAddCerclePage {
     alert.present();
   }
 
-  //////////////
-
-  addContact() {
-    if(this.isedit > -1){
-      this.cercle_friend.friends.splice(this.isedit, 1, this.contact);
-      this.contact = {name: null, email: null};
-      this.isedit = -1;
-    }else{
-      this.cercle_friend.friends.push(this.contact);
-      this.contact = {name: null, email: null};
-    }
-  }
-
-
-  editContact(contact, i) {
-    this.contact = contact;
-    this.isedit = i;
-  }
-
-  removeContact(i) {
-    this.cercle_friend.friends.splice(i, 1);
-  }
-
   cancel() {
     this.viewCtrl.dismiss();
-  }
-
-  saveCercle() {
-    this.viewCtrl.dismiss(this.cercle_friend);
   }
 
 }

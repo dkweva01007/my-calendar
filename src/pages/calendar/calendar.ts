@@ -3,6 +3,12 @@ import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { GHttpProvider } from '../../providers/g-http/g-http';
 import { DatabaseProvider } from '../../providers/database/database';
 
+// TODO 1. INSERT GROUP | Create group calendar
+// TODO 2. INSERT GROUP | Create ACL roles for each person in group
+// TODO 3. EDIT GROUP | Edit ACL roles of group
+// TODO 4. DELETE GROUP | Delete group
+// TODO 5. Choose Calendar | Delete group
+
 @Component({
   selector: 'page-calendar',
   templateUrl: 'calendar.html'
