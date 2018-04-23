@@ -11,6 +11,28 @@
 
 
 <ion-content padding>
+  <ion-list inset>
+    <button ion-item *ngFor="let circle of userCircles" (click)="selectCircle(circle)">
+      {{ circle.name }}
+    </button>
+  </ion-list>
+  <!--ion-list>
+    <ion-item-sliding *ngFor="let circle of userCircles; let i = index">
+      <ion-item>
+        <h2>{{circle.name}}</h2>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button icon-only color="primary">
+          <ion-icon name="create"></ion-icon>
+        </button>
+        <button ion-button icon-only color="danger" (click)="deleteCircle(circle)">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+
   <ion-list no-lines inset>
     <ion-item small color="balanced" *ngFor="let cercle_friend of cercle_friends; let i = index">
         <button block outline (click)="editCercleFriend(cercle_friend, i)">{{ cercle_friend.name }}</button>
@@ -18,7 +40,7 @@
           <ion-icon name="close"></ion-icon>
         </button>
     </ion-item>
-  </ion-list>
+  </ion-list-->
 </ion-content>
 
 <button ion-button id="Run" (click)="addCercleFriend()">Ajouter un nouveau cercle</button>

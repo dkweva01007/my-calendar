@@ -57,7 +57,7 @@
   <ion-list>
     <ion-item>
       <ion-label floating>Nom du cercle</ion-label>
-      <ion-input type="text" [(ngModel)]="circleName"></ion-input>
+      <ion-input type="text" [(ngModel)]="circleName" disabled="{{editMode}}"></ion-input>
     </ion-item>
   </ion-list>
   <ion-grid>
@@ -85,5 +85,8 @@
 <ion-footer no-shadow>
   <ion-toolbar position="bottom">
     <button ion-button full color="secondary" (click)="save()"> Save </button>
+  </ion-toolbar>
+  <ion-toolbar position="bottom" *ngIf="editMode">
+    <button ion-button full color="danger" (click)="delete()"> Delete </button>
   </ion-toolbar>
 </ion-footer>

@@ -53,12 +53,43 @@ export class DatabaseProvider {
       try {
         tmp.fireDB.ref(table).once('value')
           .then(snapshot => snapshot.val()).then(response => {
-          resolve(response);
-        });
+            resolve(response);
+          });
       } catch(err) {
         reject(err);
       }
     });
+  }
+
+  /**
+   * Insert new item in database
+   * @param {object} params                Parameters
+   * @param {string} params.table          Table name
+   * @param {string} params.userID         User ID
+   * @param {string} params.itemKey        Key of item to be deleted
+   * @returns {Promise<object>}
+   */
+  delete(params): Promise<any> {
+    let tmp = this;
+    return new Promise(function (resolve, reject) {
+      try {
+        tmp.fireDB.ref(params.table + '/' + params.userID + '/' + params.itemKey).set(null);
+        resolve()
+      } catch(err) {
+        reject(err);
+      }
+    });
+  }
+
+  /**
+   * Insert new item in database
+   * @param {object} params                Parameters
+   * @param {string} params.table          Table name
+   * @param {string} params.userID         User ID
+   * @returns {Promise<object>}
+   */
+  getUserData(params) {
+    return this.fireDB.ref('/' + params.table + '/' + params.userID);
   }
 
   /**
@@ -102,6 +133,27 @@ export class DatabaseProvider {
   /**
    * Insert new item in database
    * @param {object} params             Object containing parameters necessary to query
+   * @param {string} params.reference   Reference ie 'table/userID/child'
+   * @param {object} params.newData     Data to replace the old one
+   * @returns {Promise<object>}
+   */
+  update(params): Promise<any> {
+    let tmp = this;
+    return new Promise(function (resolve, reject) {
+      try {
+        console.log('Database Provider | update | ref : ', params.reference, ' | data : ', params.newData);
+        tmp.fireDB.ref(params.reference).update(params.newData);
+        resolve();
+      } catch(err) {
+        console.log('Database Provider | Updating | err: ', err);
+        reject(err);
+      }
+    });
+  }
+
+  /**
+   * Insert new item in database
+   * @param {object} params             Object containing parameters necessary to query
    * @param {string} params.table       Table name
    * @param {string} params.userID      User ID
    * @returns {Promise<object>}
@@ -119,9 +171,5 @@ export class DatabaseProvider {
       }
     });
   }
-
-
-
-
 
 }

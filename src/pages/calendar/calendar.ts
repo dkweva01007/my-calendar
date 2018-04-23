@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { GHttpProvider } from '../../providers/g-http/g-http';
+import { DatabaseProvider } from '../../providers/database/database';
 
 @Component({
   selector: 'page-calendar',

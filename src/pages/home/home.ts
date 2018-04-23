@@ -1,18 +1,15 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, MenuController } from 'ionic-angular';
-import { GooglePlus } from '@ionic-native/google-plus';
 import { GHttpProvider } from '../../providers/g-http/g-http';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as firebase from 'firebase';
 
-import { EventModalAddCerclePage } from '../event-modal-add-cercle/event-modal-add-cercle';
 import { CalendarPage } from '../calendar/calendar';
 import { LoginPage } from "../login/login";
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html',
-  providers: [GooglePlus]
+  templateUrl: 'home.html'
 })
 export class HomePage {
 
@@ -24,15 +21,17 @@ export class HomePage {
   // TODO 2.) add friends to circles
   // TODO 3.) add circles as attendees
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private googlePlus: GooglePlus,
+  constructor(public navCtrl: NavController, public navParams: NavParams,
               private gHttpProvider: GHttpProvider, public menuCtrl: MenuController, private auth: AuthProvider) {
     if(localStorage.getItem("gToken") === null)
       localStorage.setItem("gToken", '[]');
     this.myIndex = navParams.data.tabIndex || 0;
 
-    this.menuCtrl.enable(true, 'myMenu');
     this.user = firebase.auth().currentUser;
-    console.log('Home Page | user : ', this.auth.currentUser);
+  }
+
+  ionViewDidLoad() {
+    this.menuCtrl.enable(true, 'myMenu');
   }
 
   logout() {

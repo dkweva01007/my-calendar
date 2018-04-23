@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, MenuController } from 'ionic-angular';
 import { HomePage } from '../home/home';
-import { GHttpProvider } from '../../providers/g-http/g-http';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as firebase from "firebase";
 
@@ -18,7 +17,7 @@ export class LoginPage {
   // TODO: create auth service by following: https://medium.com/appseed-io/integrating-firebase-password-and-google-authentication-into-your-ionic-3-app-2421cee32db9
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public menuCtrl: MenuController,
-              private auth: AuthProvider, private gHttpProvider: GHttpProvider) {
+              private auth: AuthProvider) {
     this.menuCtrl.enable(false, 'myMenu');
     let user = firebase.auth().currentUser;
     console.log('LoginPage | user: ', user);
