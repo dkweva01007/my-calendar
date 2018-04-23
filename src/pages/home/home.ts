@@ -32,8 +32,7 @@ export class HomePage {
 
     this.menuCtrl.enable(true, 'myMenu');
     this.user = firebase.auth().currentUser;
-    // TODO : delete code below
-    this.navCtrl.push(EventModalAddCerclePage);
+    console.log('Home Page | user : ', this.auth.currentUser);
   }
 
   logout() {

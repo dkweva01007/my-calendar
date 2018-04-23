@@ -1,32 +1,25 @@
 import { Injectable } from '@angular/core';
 import { GHttpProvider } from '../../providers/g-http/g-http';
+import { DatabaseProvider } from '../../providers/database/database';
 import * as firebase from 'firebase';
 import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class AuthProvider {
 
-  constructor(private gHttpProvider: GHttpProvider, private storage: Storage) {
+  currentUser: any;
 
+  constructor(private gHttpProvider: GHttpProvider, private storage: Storage, private database: DatabaseProvider) {
     // TODO : catch cut connection to firebase database, once connected again, save all events via google calendar API
+    console.log('Auth Provider | add user to database');
+    this.database.addUserToDatabase().then(loggedUser => {
+      this.currentUser = loggedUser;
+      console.log('Auth Provider | changing current user to : ', this.currentUser);
+    }).catch(err => console.log('Auth Provider | Firebase logged in | err updating currentUser : ', err));
+  }
 
-    firebase.auth().onAuthStateChanged( user => {
-      if (user){
-        console.log('Auth Provider | firebase onAuthStateChanged | user : ', user);
-        firebase.database().ref().child('users').child(user.uid).once('value', (snapshot) => {
-          let exists = (snapshot.val() !== null);
-          if(!exists) {
-            firebase.database().ref('users/' + user.uid).set({
-              email: user.email,
-              photoURL: user.photoURL,
-              displayName: user.displayName
-            });
-          }
-        });
-      } else {
-        console.log('Auth Provider | firebase onAuthStateChanged | NO USER');
-      }
-    });
+  getCurrentUser() {
+    return this.currentUser;
   }
 
   silentLogin(): Promise<any> {

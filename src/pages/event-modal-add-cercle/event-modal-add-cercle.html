@@ -5,12 +5,13 @@
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-title *ngIf="cercle_friend">{{ cercle_friend.name }}</ion-title>
+    <!--ion-title *ngIf="cercle_friend">{{ cercle_friend.name }}</ion-title-->
+    <ion-title>Nouveau cercle</ion-title>
   </ion-navbar>
 </ion-header>
- 
+
 <ion-content padding>
-  <ion-list>
+  <!--ion-list>
     <ion-list-header>
       Nom du cercle
     </ion-list-header>
@@ -19,8 +20,8 @@
         <ion-input type="text" placeholder="Title" [(ngModel)]="cercle_friend.name"></ion-input>
       </ion-item>
     </ion-item-group>
-  </ion-list>
-  <ion-list>
+  </ion-list-->
+  <!--ion-list>
     <ion-list-header>
       Contacts
     </ion-list-header>
@@ -44,8 +45,45 @@
         </button>
     </ion-item>
   </ion-list>
- 
+
   <button ion-button full id="run" (click)="save()">
     <ion-icon name="checkmark"></ion-icon> Valider
-  </button>
+  </button-->
+  <ion-list *ngIf="errorMsg">
+    <ion-item>
+      <p style="color: red;">{{ errorMsg }}</p>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Nom du cercle</ion-label>
+      <ion-input type="text" [(ngModel)]="circleName"></ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6 *ngFor="let selectedUser of usersSelected; let i = index" (click)="unselectUser(i)">
+        {{selectedUser.displayName}}
+        <button ion-button icon-only float-right clear small color="danger">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-searchbar [(ngModel)]="searchTerm" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>
+  <div *ngIf="searching" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+  <ion-list>
+    <ion-item *ngFor="let user of users; let u = index" (click)="selectUser(user)">
+      <div *ngIf="u < 5">
+        {{user.displayName}}
+      </div>
+    </ion-item>
+  </ion-list>
 </ion-content>
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    <button ion-button full color="secondary" (click)="save()"> Save </button>
+  </ion-toolbar>
+</ion-footer>

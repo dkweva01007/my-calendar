@@ -83,7 +83,7 @@ export class GHttpProvider {
    * @param {string} params.URI         URI path to query
    * @param {object} params.params      Query parameters
    * @param {object} params.body        Query request body
-   * @returns {object}                  Response from Google API
+   * @returns {Promise<object>}         Response from Google API
    */
   queryGoogle(params): Promise<any> {
     let tmp = this;

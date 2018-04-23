@@ -21,6 +21,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase';
 import { AuthProvider } from '../providers/auth/auth';
+import { DatabaseProvider } from '../providers/database/database';
 
 const config = {
   apiKey: 'AIzaSyCG5CWzIexkOJpEfhjEfkp7VqKjD6mDi4A',
@@ -60,8 +61,7 @@ const pages = [
     GHttpProvider,
     AngularFireAuth,
     AuthProvider,
-    AuthProvider,
-    AuthProvider
+    DatabaseProvider
   ]
 })
 export class AppModule {}
