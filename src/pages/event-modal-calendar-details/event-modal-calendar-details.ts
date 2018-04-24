@@ -10,6 +10,7 @@ import * as moment from 'moment';
 export class EventModalCalendarDetailsPage {
 
   selectedEvent: any;
+  selectedCalendar: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController,
               private alertCtrl: AlertController, private modalCtrl: ModalController) {
@@ -17,13 +18,16 @@ export class EventModalCalendarDetailsPage {
 
   ionViewDidLoad() {
     this.selectedEvent = this.navParams.get('selectedEvent');
-    console.log('viewing event : ', this.selectedEvent);
+    this.selectedCalendar = this.navParams.get('selectedCalendar');
+    console.log('viewing event : ', this.selectedEvent, ' in calendar: ', this.selectedCalendar);
     this.selectedEvent.startTimeFormatted = moment(this.selectedEvent.startTime).format('LLLL');
     this.selectedEvent.endTimeFormatted = moment(this.selectedEvent.endTime).format('LLLL');
   }
 
   edit() {
-    let modal = this.modalCtrl.create('EventModalPage', {selectedEvent: this.selectedEvent});
+    let modal = this.modalCtrl.create('EventModalPage', {
+      selectedEvent: this.selectedEvent, selectedCalendar: this.selectedCalendar
+    });
     modal.present();
     modal.onDidDismiss(modifiedEvent => {
       this.selectedEvent = modifiedEvent;

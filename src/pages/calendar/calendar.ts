@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { GHttpProvider } from '../../providers/g-http/g-http';
-import { DatabaseProvider } from '../../providers/database/database';
-
-// TODO 1. INSERT GROUP | Create group calendar
-// TODO 2. INSERT GROUP | Create ACL roles for each person in group
-// TODO 3. EDIT GROUP | Edit ACL roles of group
-// TODO 4. DELETE GROUP | Delete group
-// TODO 5. Choose Calendar | Delete group
 
 @Component({
   selector: 'page-calendar',
@@ -20,6 +13,7 @@ export class CalendarPage {
   myIndex: number;
   selectedDay = new Date();
 
+  selectedCalendar: any;
   isToday: boolean;
   calendar = {
     mode: 'month',
@@ -55,25 +49,35 @@ export class CalendarPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController,
               private gHttpProvider: GHttpProvider) {
     this.myIndex = navParams.data.tabIndex || 0;
+
+    this.selectedCalendar = this.navParams.get('selectedCalendar');
     this.showAllGoogleEventsOnCalendar();
   }
 
   showAllGoogleEventsOnCalendar() {
+    console.log("selected calendar id: ", this.selectedCalendar.id);
     this.gHttpProvider.queryGoogle({
-      method: 'GET', params: { 'calendarId' : 'primary' },
-      URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
-    }).then(primaryCalendar => {
+      method: 'GET', params: { 'calendarId' : this.selectedCalendar.id },
+      URI: 'https://www.googleapis.com/calendar/v3/calendars/' + this.selectedCalendar.id + '/events'
+    }).then(calendarEvents => {
       this.eventSource = [];
+      console.log('calendarEvents : ', calendarEvents);
+      /*
       let tmp = this
-        , events = primaryCalendar.items.reverse();
+        , events = calendarEvents.items.reverse();
+      console.log('events : ', event);
       events.forEach(function (event) {
         tmp.addGoogleEvent(event);
       });
+      */
+      for(let event of calendarEvents.items.reverse()) {
+        this.addGoogleEvent(event);
+      }
     }).catch(err => console.error('CalendarPate | Error getting calendar events : ', err));
   }
 
   addGoogleEvent(googleEvent) {
-    if(googleEvent && googleEvent.hasOwnProperty('start') && googleEvent.hasOwnProperty('end')) {
+    if(googleEvent && googleEvent.hasOwnProperty('start') && googleEvent.hasOwnProperty('end') &&  googleEvent.hasOwnProperty('creator')) {
       this.eventSource.push({
         id: googleEvent.id,
         status: googleEvent.status,
@@ -86,11 +90,16 @@ export class CalendarPage {
         attendees: googleEvent.hasOwnProperty('attendees') ? googleEvent.attendees : '',
         description: googleEvent.hasOwnProperty('description') ? googleEvent.description : ''
       });
+    } else {
+      console.log('google event not added, something wrong with it');
     }
+
   }
 
   addEvent() {
-    let modal = this.modalCtrl.create('EventModalPage', {selectedDay: this.selectedDay});
+    let modal = this.modalCtrl.create('EventModalPage', {
+      selectedDay: this.selectedDay, selectedCalendar: this.selectedCalendar
+    });
     modal.present();
     modal.onDidDismiss(savedEvent => {
       this.showAllGoogleEventsOnCalendar();
@@ -102,12 +111,15 @@ export class CalendarPage {
   }
 
   onEventSelected(selectedEvent) {
-    let modal = this.modalCtrl.create('EventModalCalendarDetailsPage', {selectedEvent: selectedEvent});
+    let modal = this.modalCtrl.create(
+      'EventModalCalendarDetailsPage',
+      {selectedEvent: selectedEvent, selectedCalendar: this.selectedCalendar}
+      );
     modal.present();
     modal.onDidDismiss(params => {
       if(params && params.action === "delete") {
         this.gHttpProvider.queryGoogle({
-          method: 'DELETE', params: { 'calendarId' : 'primary' },
+          method: 'DELETE', params: { 'calendarId' : this.selectedCalendar.id },
           URI: 'https://www.googleapis.com/calendar/v3/calendars/primary/events/' + params.event.id
         }).then(response => {
           this.showAllGoogleEventsOnCalendar();

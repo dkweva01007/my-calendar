@@ -11,7 +11,7 @@
       <button ion-button (click)="changeMode('month')">M</button>
       <button ion-button (click)="changeMode('week')">W</button>
       <button ion-button (click)="changeMode('day')">D</button>
-      <button ion-button icon-only (click)="addEvent()">
+      <button ion-button icon-only (click)="addEvent()" [disabled]="selectedCalendar.accessRole === 'reader'">
         <ion-icon name="add"></ion-icon>
       </button>
     </ion-buttons>
@@ -19,6 +19,9 @@
 </ion-header>
 
 <ion-content>
+  <h2>
+    Calendar: {{ selectedCalendar.summary }}
+  </h2>
   <calendar [eventSource]="eventSource"
         [calendarMode]="calendar.mode"
         [currentDate]="calendar.currentDate"
@@ -29,4 +32,14 @@
         step="30"
         class="calendar">
   </calendar>
+  <!--ion-fab color="danger" right bottom>
+    <button ion-fab color="light"><ion-icon name="arrow-dropleft"></ion-icon></button>
+    <ion-fab-list side="left">
+      <button ion-fab (click)="addEvent()"><ion-icon name="add"></ion-icon></button>
+      <button ion-fab (click)="changeMode('day')">D</button>
+      <button ion-fab (click)="changeMode('week')">W</button>
+      <button ion-fab (click)="changeMode('month')">M</button>
+      <button ion-fab [disabled]="isToday" (click)="today()">Today</button>
+    </ion-fab-list>
+  </ion-fab-->
 </ion-content>

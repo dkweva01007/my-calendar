@@ -20,9 +20,9 @@ export class MenuPage {
   @ViewChild(Nav)nav: Nav;
 
   pages = [
-    { title: 'Profile', component: HomePage, index: 0, icon: 'home' },
-    { title: 'Calendrier', component: CalendarPage, index: 1, icon: 'calendar' },
-    { title: 'Cercle d\'ami', component: CerclePage, index: 2, icon: 'contacts' },
+    { title: 'Dashboard', component: HomePage, index: 0, icon: 'home' },
+    //{ title: 'Calendrier', component: CalendarPage, index: 1, icon: 'calendar' },
+    { title: 'Cercles', component: CerclePage, index: 2, icon: 'contacts' },
   ];
 
   constructor(public navCtrl: NavController, private auth: AuthProvider) { }

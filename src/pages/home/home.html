@@ -3,7 +3,7 @@
     <ion-buttons>
       <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
-      <ion-title>Profile</ion-title>
+      <ion-title>Dashboard</ion-title>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -11,13 +11,20 @@
 
 
 <ion-content padding>
-    <h1>Welcome, {{user.displayName}}!</h1>
-    <p>Email: {{user.email}}<br>
-      User ID: {{user.uid}}</p>
-    <p><ion-avatar item-left>
-        <img src="{{user.photoURL}}">
-       </ion-avatar></p>
-    <p><button ion-button (click)="showCalendarPage()">Go to Calendar</button></p>
-    <p><button ion-button (click)="refreshToken()">Refresh Token</button></p>
-    <p><button ion-button (click)="logout()">Logout From Google</button></p>
+  <h1>Welcome, {{user.displayName}}!</h1>
+  <p>Email: {{user.email}}<br>
+    User ID: {{user.uid}}</p>
+  <p>
+    <ion-avatar item-left>
+      <img src="{{user.photoURL}}">
+    </ion-avatar>
+  </p>
+  <ion-list>
+    <ion-list-header>
+      Calendars
+    </ion-list-header>
+    <button ion-item *ngFor="let calendar of calendars" (click)="viewCalendar(calendar)">
+      {{ calendar.summary }}
+    </button>
+  </ion-list>
 </ion-content>

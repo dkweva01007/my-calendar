@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, MenuController } from 'ionic-angular';
 import { GHttpProvider } from '../../providers/g-http/g-http';
 import { AuthProvider } from '../../providers/auth/auth';
-import * as firebase from 'firebase';
-
 import { CalendarPage } from '../calendar/calendar';
-import { LoginPage } from "../login/login";
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'page-home',
@@ -13,13 +11,9 @@ import { LoginPage } from "../login/login";
 })
 export class HomePage {
 
-  //user: { uid: '', email: '', displayName: '' };
   user: any;
+  calendars;
   myIndex: number;
-
-  // TODO 1.) add friends
-  // TODO 2.) add friends to circles
-  // TODO 3.) add circles as attendees
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private gHttpProvider: GHttpProvider, public menuCtrl: MenuController, private auth: AuthProvider) {
@@ -32,26 +26,26 @@ export class HomePage {
 
   ionViewDidLoad() {
     this.menuCtrl.enable(true, 'myMenu');
+
+    this.gHttpProvider.queryGoogle({
+      method: 'GET',
+      URI: 'https://www.googleapis.com/calendar/v3/users/me/calendarList'
+    }).then(calendarList => {
+      this.calendars = [];
+      for(let calendar of calendarList.items) {
+        if(calendar.accessRole !== 'freeBusyReader') {
+          this.calendars.push({
+            id: this.auth.getCurrentUser().email === calendar.id ? 'primary' : calendar.id,
+            summary: calendar.summary,
+            accessRole: calendar.accessRole
+          });
+        }
+      }
+    }).catch(err => console.error('CalendarPate | Error getting calendar events : ', err));
   }
 
-  logout() {
-    this.auth.logout()
-      .then(() => {
-        console.log('MenuPage | logged out');
-        this.navCtrl.setRoot(LoginPage);
-        this.navCtrl.popToRoot();
-      })
-      .catch(err => console.error(err));
-  }
-
-  showCalendarPage() {
-    this.navCtrl.push(CalendarPage);
-  }
-
-  // NOT WORKING
-  refreshToken() {
-    this.gHttpProvider.refreshAccessToken().then(res => {
-    }).catch(err => console.error(err));
+  viewCalendar(calendar) {
+    this.navCtrl.push(CalendarPage, {selectedCalendar : calendar});
   }
 
 }
