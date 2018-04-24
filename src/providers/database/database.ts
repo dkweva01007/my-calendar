@@ -74,7 +74,7 @@ export class DatabaseProvider {
     return new Promise(function (resolve, reject) {
       try {
         tmp.fireDB.ref(params.table + '/' + params.userID + '/' + params.itemKey).set(null);
-        resolve()
+        resolve();
       } catch(err) {
         reject(err);
       }

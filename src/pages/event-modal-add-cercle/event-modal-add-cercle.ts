@@ -25,6 +25,7 @@ export class EventModalAddCerclePage {
   calendarID: any;
   usersOriginal: any;
   usersSelected: any;
+  usersSelectedOriginal: any;
   searchTerm: string = '';
   searchControl: FormControl;
   searching: any = false;
@@ -43,6 +44,7 @@ export class EventModalAddCerclePage {
     this.isedit = -1;
 
     this.usersSelected = [];
+    this.usersSelectedOriginal = [];
     if(!this.navParams.get('selectedCircle')) {
       this.editMode = false;
     } else {
@@ -52,6 +54,7 @@ export class EventModalAddCerclePage {
       this.calendarID = selectedCircle.calendarID;
       for (let member of selectedCircle.members) {
         this.usersSelected.push(member);
+        this.usersSelectedOriginal.push(member);
       }
     }
 
@@ -122,7 +125,12 @@ export class EventModalAddCerclePage {
             obj[user.uid] = {email: user.email, displayName: user.displayName}, obj
           ) ,{})
         }
-      }).then(() => this.viewCtrl.dismiss()).catch(err => {
+      }).then(() => {
+        this.calendarID = savedCalendar.id;
+        console.log('saving calendar id: ', this.calendarID);
+        this.managerCalendarRoles();
+        this.viewCtrl.dismiss();
+      }).catch(err => {
         console.log('Event Modal Add Circle | Save | Err : ', err);
         this.errorMsg = err;
       });
@@ -141,11 +149,13 @@ export class EventModalAddCerclePage {
       }
     }).then(() => {
       console.log('Event add circle modal | updating circle | Success');
+      this.managerCalendarRoles();
       this.viewCtrl.dismiss()
     }).catch(err => {
       console.log('Event Modal Add Circle | Edit | Err : ', err);
       this.errorMsg = err;
     });
+
   }
 
   delete() {
@@ -179,6 +189,44 @@ export class EventModalAddCerclePage {
       ]
     });
     alert.present();
+  }
+
+  managerCalendarRoles() {
+    // remove users
+    if(this.usersOriginal.length != 0) {
+      let membersTorRemove = this.usersSelectedOriginal.filter(o => !this.usersSelected.some(f => f.uid == o.uid));
+      for(let member of membersTorRemove) {
+        this.calendarACLRoles({role: 'none', email: member.email})
+      }
+    }
+
+    // insert members
+    let membersToAdd = this.usersSelected.filter(o => !this.usersSelectedOriginal.some(f => f.uid == o.uid));
+    for(let member of membersToAdd) {
+      this.calendarACLRoles({role: 'owner', email: member.email})
+    }
+  }
+
+  /**
+   * Add / Remove users from calendar
+   * @param {object} params                Parameters
+   * @param {string} params.role           Role of the user to be added ie writer, reader, none ...
+   * @param {string} params.email          Email of the benefactor
+   * @returns {Promise<object>}
+   */
+  calendarACLRoles(params) {
+    console.log('Event Modal Circle | calendar ACL Roles | role: ', params.role, '| calendarID : ', this.calendarID, ' | user : ', params.email);
+    this.gHttpProvider.queryGoogle({
+      method: 'POST', // params: { 'calendarId' : this.calendarID },
+      URI: 'https://www.googleapis.com/calendar/v3/calendars/' + encodeURIComponent(this.calendarID) + '/acl',
+      body: {
+        role: params.role,
+        scope: {
+          type: 'group', value: params.email
+        }
+      }
+    }).then(() => console.error('Event Modal Circle | calendarACLRoles | success'))
+      .catch(err => console.error('Event Modal Circle | calendarACLRoles | err:  ', err));
   }
 
   cancel() {
