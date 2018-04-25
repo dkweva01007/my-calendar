@@ -2,6 +2,7 @@ import { HomePage } from './../home/home';
 import { LoginPage } from './../login/login';
 import { CalendarPage } from './../calendar/calendar';
 import { CerclePage } from './../cercle/cercle';
+import { WeatherPage } from './../weather/weather';
 import { Component, ViewChild, } from '@angular/core';
 import { IonicPage, NavController, Nav } from 'ionic-angular';
 import { AuthProvider } from '../../providers/auth/auth';
@@ -23,6 +24,7 @@ export class MenuPage {
     { title: 'Dashboard', component: HomePage, index: 0, icon: 'home' },
     //{ title: 'Calendrier', component: CalendarPage, index: 1, icon: 'calendar' },
     { title: 'Cercles', component: CerclePage, index: 2, icon: 'contacts' },
+    { title: 'Météo', component: WeatherPage, index: 3, icon: 'partly-sunny' },
   ];
 
   constructor(public navCtrl: NavController, private auth: AuthProvider) { }

@@ -12,6 +12,7 @@ import { MenuPage } from '../pages/menu/menu';
 import { CalendarPage } from '../pages/calendar/calendar';
 import { CerclePage } from '../pages/cercle/cercle';
 import { LoginPage } from '../pages/login/login';
+import { WeatherPage } from '../pages/weather/weather';
 
 import { NgCalendarModule  } from 'ionic2-calendar';
 import { GHttpProvider } from '../providers/g-http/g-http';
@@ -22,6 +23,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase';
 import { AuthProvider } from '../providers/auth/auth';
 import { DatabaseProvider } from '../providers/database/database';
+import { WeatherInfoProvider } from '../providers/weather/open-weather-map';
 
 const config = {
   apiKey: 'AIzaSyCG5CWzIexkOJpEfhjEfkp7VqKjD6mDi4A',
@@ -39,7 +41,8 @@ const pages = [
   MenuPage,
   CalendarPage,
   CerclePage,
-  LoginPage
+  LoginPage,
+  WeatherPage
 ];
 @NgModule({
   bootstrap: [IonicApp],
@@ -61,7 +64,8 @@ const pages = [
     GHttpProvider,
     AngularFireAuth,
     AuthProvider,
-    DatabaseProvider
+    DatabaseProvider,
+    WeatherInfoProvider
   ]
 })
 export class AppModule {}

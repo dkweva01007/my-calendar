@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Weather forecast</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid id="buttonGrid"  style="height: 100%">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+      <!--button ion-button full large strong color="primary"-->
+      <button ion-button full large color="primary" (click)="fetchForcast()">
+        Display weather forcast
+      </button>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list style="height: 100%">
+    <ion-item *ngFor="let day of weatherForecast">
+      <h2>{{day[1][0].readableDate}}</h2>
+        <ion-item *ngFor="let forecast of day[1]">
+          <ion-avatar >
+            <img src="{{forecast.icon}}"/>
+          </ion-avatar>
+          <h3>{{forecast.time}}</h3>
+          <p>{{forecast.temp}}, {{forecast.weather}}</p>
+        </ion-item>
+
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+
+
+
+
+
+<!--
+<h3>{{day[1].temp}}</h3>
+<p item-end>{{day[1].windSpeed}}</p>
+-->
